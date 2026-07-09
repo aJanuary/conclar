@@ -8,6 +8,7 @@ import TagSelectors from "./TagSelectors";
 import ResetButton from "./ResetButton";
 import ProgramList from "./ProgramList";
 import ShowPastItems from "./ShowPastItems";
+import LoadError from "./LoadError";
 import { LocalTime } from "../utils/LocalTime";
 import { buildLocationOptions, locationMatchesSelection } from "../utils/Venues";
 import { useTickingNow } from "../hooks/useTickingNow";
@@ -119,6 +120,9 @@ function applyFilters(program, { search, selLoc, selTags, showPastItems, hideBef
 
 const FilterableProgram = () => {
   const navigate = useNavigate();
+
+  const isLoading = useStoreState((state) => state.isLoading);
+  const loadError = useStoreState((state) => state.loadError);
 
   const program = useStoreState((state) => state.program);
   const locations = useStoreState((state) => state.locations);
@@ -251,6 +255,7 @@ const FilterableProgram = () => {
             id="display_limit"
             name="display_limit"
             value={displayLimit(programDisplayLimit)}
+            disabled={isLoading}
             onChange={(e) => {
               setProgramDisplayLimit(e.target.value);
               setDisplayLimit(parseInt(e.target.value));
@@ -291,6 +296,7 @@ const FilterableProgram = () => {
         id="hide-before"
         placeholder={configData.HIDE_BEFORE.PLACEHOLDER}
         value={hideBefore}
+        disabled={isLoading}
         onChange={(e) => {
           resetDisplayLimit();
           setHideBefore(e.target.value);
@@ -308,6 +314,8 @@ const FilterableProgram = () => {
     </div>
   );
 
+  if (loadError) return <LoadError />;
+
   return (
     <div>
       <div className="filter" role="search">
@@ -317,6 +325,7 @@ const FilterableProgram = () => {
               placeholder="Select locations"
               options={buildLocationOptions(locations, configData)}
               isMulti
+              isDisabled={isLoading}
               isSearchable={configData.LOCATIONS?.SEARCHABLE}
               value={selLoc}
               onChange={(value) => {
@@ -338,6 +347,7 @@ const FilterableProgram = () => {
             tags={tags}
             selTags={selTags}
             setSelTags={setSelTags}
+            isLoading={isLoading}
             tagConfig={configData.TAGS ?? {}}
             resetLimit={resetDisplayLimit}
           />
@@ -349,6 +359,7 @@ const FilterableProgram = () => {
               type="search"
               placeholder={configData.PROGRAM.SEARCH.SEARCH_LABEL}
               value={search}
+              disabled={isLoading}
               onChange={(e) => {
                 resetDisplayLimit();
                 setSearch(e.target.value);
@@ -365,12 +376,14 @@ const FilterableProgram = () => {
         {limitDropDown()}
         <div className="result-filters">
           <div className="stack">
-            <div className="filter-total">{totalMessage}</div>
+            <div className="filter-total">
+              {isLoading ? configData.APPLICATION.LOADING.MESSAGE : totalMessage}
+            </div>
             <div className="filter-expand">
-              <button disabled={allExpanded} onClick={expandAll}>
+              <button disabled={isLoading || allExpanded} onClick={expandAll}>
                 {configData.EXPAND?.EXPAND_ALL_LABEL ?? "Expand All"}
               </button>
-              <button disabled={noneExpanded} onClick={collapseAll}>
+              <button disabled={isLoading || noneExpanded} onClick={collapseAll}>
                 {configData.EXPAND?.COLLAPSE_ALL_LABEL ?? "Collapse All"}
               </button>
             </div>
@@ -380,15 +393,31 @@ const FilterableProgram = () => {
           </div>
         </div>
       </div>
-      <div className="program-page">
-        <ProgramList program={display} now={now} />
-      </div>
-      <div className="result-filters">
-        <div className="stack">
-          <div className="filter-total">{totalMessage}</div>
+      {isLoading ? (
+        <div className="program-page">
+          <div className="program-container">
+            <div className="time-convention-message" aria-hidden="true">
+              {configData.CONVENTION_TIME.NOTICE.replace(
+                "@timezone",
+                configData.TIMEZONE
+              )}
+            </div>
+            <div className="program-empty">{"\u00A0"}</div>
+          </div>
         </div>
-      </div>
-      <div className="result-more-button">{moreButton}</div>
+      ) : (
+        <>
+          <div className="program-page">
+            <ProgramList program={display} now={now} />
+          </div>
+          <div className="result-filters">
+            <div className="stack">
+              <div className="filter-total">{totalMessage}</div>
+            </div>
+          </div>
+          <div className="result-more-button">{moreButton}</div>
+        </>
+      )}
     </div>
   );
 };
