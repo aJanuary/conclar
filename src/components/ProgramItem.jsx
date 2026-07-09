@@ -14,7 +14,7 @@ import Participant from "./Participant";
 import configData from "../config.json";
 import PropTypes from "prop-types";
 import { Temporal } from "@js-temporal/polyfill";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { LocalTime } from "../utils/LocalTime";
 import { downloadIcs } from "../utils/ICalendar";
 import { venueForLocation } from "../utils/Venues";
@@ -124,9 +124,9 @@ const ProgramItem = ({ item, forceExpanded = false, now }) => {
       );
     });
   }
-  const safeDesc = DOMPurify.sanitize(
-    item.desc,
-    configData.ITEM_DESCRIPTION?.PURIFY_OPTIONS
+  const safeDesc = useMemo(
+    () => DOMPurify.sanitize(item.desc, configData.ITEM_DESCRIPTION?.PURIFY_OPTIONS),
+    [item.desc]
   );
 
   const links = [];
