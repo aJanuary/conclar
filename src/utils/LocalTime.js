@@ -401,21 +401,21 @@ export class LocalTime {
    * Filter out program items that have already happened.
    *
    * @param {Array} program
-   * @param {bool} showPastItems
+   * @param {Temporal.ZonedDateTime} now
    * @returns {Array}
    */
-  static filterPastItems(program) {
+  static filterPastItems(program, now) {
     const adjustMinutes = configData.SHOW_PAST_ITEMS?.ADJUST_MINUTES ?? 0;
     if (configData.SHOW_PAST_ITEMS?.FROM_START) {
       // Filter by past item state.  Quick hack to treat this as a filter.
-      const cutOff = Temporal.Now.zonedDateTimeISO("UTC").add({
+      const cutOff = now.add({
         minutes: adjustMinutes,
       });
       return program.filter((item) => {
         return Temporal.ZonedDateTime.compare(cutOff, item.startDateAndTime) <= 0;
       });
     } else {
-      const cutOff = Temporal.Now.zonedDateTimeISO("UTC").subtract({
+      const cutOff = now.subtract({
         minutes: adjustMinutes,
       });
       return program.filter((item) => {
@@ -431,14 +431,14 @@ export class LocalTime {
    * Check if currently during the convention.
    *
    * @param {Array} program
+   * @param {Temporal.ZonedDateTime} now
    * @returns {bool}
    */
-  static isDuringCon(program) {
+  static isDuringCon(program, now) {
     //First check that program is an array.
     if (!program || !(program instanceof Array) || program.length === 0) {
       return false;
     }
-    const now = Temporal.Now.zonedDateTimeISO("UTC");
     const startTime = program[0].startDateAndTime;
     const [lastItem] = program.slice(-1);
     const endTime = lastItem.endDateAndTime;
