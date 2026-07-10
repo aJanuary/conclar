@@ -85,7 +85,7 @@ function applyFilters(program, { search, selLoc, selTags, showPastItems, hideBef
   if (LocalTime.isDuringCon(program, now) && !showPastItems) {
     filtered = LocalTime.filterPastItems(filtered, now);
   }
-  if (!configData.HIDE_BEFORE.HIDE && hideBefore) {
+  if (!configData.HIDE_BEFORE?.HIDE && hideBefore) {
     if (
       "days" in selTags &&
       Array.isArray(selTags.days) &&
@@ -188,10 +188,17 @@ const FilterableProgram = () => {
     displayLimit !== "all" && displayLimit < total
       ? `Listing ${displayLimit} of ${total} items`
       : `Listing ${total} items`;
-  const display =
-    configData.PROGRAM.LIMIT.SHOW && !isNaN(displayLimit)
-      ? filtered.slice(0, displayLimit)
-      : filtered;
+  // Memoized so ProgramList only sees a new `program` reference when the
+  // visible items actually change - otherwise unrelated re-renders (the
+  // ticking clock, etc.) would hand it a fresh array each time, defeating
+  // the memoization inside it.
+  const display = useMemo(
+    () =>
+      configData.PROGRAM.LIMIT.SHOW && !isNaN(displayLimit)
+        ? filtered.slice(0, displayLimit)
+        : filtered,
+    [filtered, displayLimit]
+  );
 
   /**
    * When filters change, set the display limit back to the selection.
