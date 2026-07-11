@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { useStoreState, useStoreActions } from "easy-peasy";
+import { useStore, useStoreState, useStoreActions } from "easy-peasy";
 import { Link } from "react-router-dom";
 import { IoChevronDownCircle } from "react-icons/io5";
 import { HiLink } from "react-icons/hi";
@@ -47,6 +47,11 @@ const ProgramItem = ({
   const expanded = useStoreState((state) => state.isExpanded(item.id));
   const expandItem = useStoreActions((actions) => actions.expandItem);
   const collapseItem = useStoreActions((actions) => actions.collapseItem);
+  // Read at render time, not subscribed: an item only needs the flag's
+  // value when its own expanded state just changed (which already
+  // re-rendered it). Subscribing would re-render every item whenever the
+  // flag flips between bulk and individual.
+  const snapExpansion = useStore().getState().expandedItemsChangedInBulk;
 
   function toggleExpanded() {
     if (configData.INTERACTIVE) {
@@ -274,6 +279,7 @@ const ProgramItem = ({
             id={id}
             showExpanded={showExpanded}
             calendarLink={calendarLink}
+            snap={snapExpansion}
             permaLink={permaLink}
             people={people}
             tags={tags}
