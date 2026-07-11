@@ -235,43 +235,8 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Settings for the main programme list, My Schedule, and shared-items pages.",
-      "required": ["LIMIT", "SEARCH", "MY_SCHEDULE", "SHARED"],
+      "required": ["SEARCH", "MY_SCHEDULE", "SHARED"],
       "properties": {
-        "LIMIT": {
-          "type": "object",
-          "additionalProperties": false,
-          "description": "Controls the \"maximum items displayed\" drop-down on the programme page.",
-          "required": ["DEFAULT", "SHOW_MORE"],
-          "properties": {
-            "SHOW": { "type": "boolean", "description": "If true, \"limit number of items\" drop-down will be displayed." },
-            "LABEL": { "type": "string", "description": "Label for limit drop-down." },
-            "OPTIONS": {
-              "type": "array",
-              "description": "Options for the limit drop-down.",
-              "items": { "type": "integer" }
-            },
-            "ALL_LABEL": { "type": "string", "description": "Label to show for the \"All\" entry." },
-            "DEFAULT": { "type": "integer", "description": "Default value for the limit drop-down." },
-            "SHOW_MORE": {
-              "type": "object",
-              "additionalProperties": false,
-              "required": ["LABEL", "NO_MORE", "NUM_EXTRA"],
-              "properties": {
-                "LABEL": { "type": "string", "description": "Label for the \"Show more\" button." },
-                "NO_MORE": { "type": "string", "description": "Message to display when no more items are available." },
-                "NUM_EXTRA": { "type": "integer", "description": "Number of items to add when \"Show more\" is pressed." }
-              }
-            }
-          },
-          "if": {
-            "required": ["SHOW"],
-            "properties": { "SHOW": { "const": true } }
-          },
-          "then": {
-            "required": ["OPTIONS", "ALL_LABEL", "LABEL"],
-            "properties": { "OPTIONS": true, "ALL_LABEL": true, "LABEL": true }
-          }
-        },
         "SEARCH": {
           "type": "object",
           "additionalProperties": false,
