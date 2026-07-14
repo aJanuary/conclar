@@ -1,4 +1,3 @@
-import DOMPurify from "dompurify";
 import { useStore, useStoreState, useStoreActions } from "easy-peasy";
 import { Link } from "react-router-dom";
 import { IoChevronDownCircle } from "react-icons/io5";
@@ -13,7 +12,7 @@ import { ExpandableDetails } from "./ExpandableDetails";
 import configData from "../config.json";
 import PropTypes from "prop-types";
 import { Temporal } from "@js-temporal/polyfill";
-import { useState, useEffect, useMemo, memo } from "react";
+import { useState, useEffect, memo } from "react";
 import { LocalTime } from "../utils/LocalTime";
 import { downloadIcs } from "../utils/ICalendar";
 import { venueForLocation } from "../utils/Venues";
@@ -127,11 +126,6 @@ const ProgramItem = ({
       );
     });
   }
-  const safeDesc = useMemo(
-    () => DOMPurify.sanitize(item.desc, configData.ITEM_DESCRIPTION?.PURIFY_OPTIONS),
-    [item.desc]
-  );
-
   const links = [];
   if (configData.LINKS) {
     configData.LINKS.forEach((link) => {
@@ -283,7 +277,7 @@ const ProgramItem = ({
             permaLink={permaLink}
             people={people}
             tags={tags}
-            safeDesc={safeDesc}
+            desc={item.desc}
             links={links}
           />
         )}
