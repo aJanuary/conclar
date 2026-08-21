@@ -1,0 +1,43 @@
+name: Config schema validation
+
+on:
+  pull_request:
+    paths:
+      - "src/config_example.json"
+      - "src/configSchema.json"
+      - "src/validateConfig.js"
+      - "scripts/**"
+      - "docs/config_reference.md"
+      - "package.json"
+      - "package-lock.json"
+
+jobs:
+  validate-config:
+    name: Validate config_example.json against schema
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run validate:config-example
+
+  check-docs:
+    name: Check config docs are up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run docs:check

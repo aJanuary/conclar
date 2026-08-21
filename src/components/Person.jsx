@@ -24,7 +24,7 @@ const Person = () => {
   const img = person.img ? <img src={person.img} alt={person.name} /> : "";
   // Sanitize the bio to remove dangerous HTML, using options from config.
   const safeBio = person.bio
-    ? DOMPurify.sanitize(person.bio, configData.PEOPLE.BIO.PURIFY_OPTIONS)
+    ? DOMPurify.sanitize(person.bio, configData.PEOPLE?.BIO?.PURIFY_OPTIONS)
     : "";
   const filteredProgram = program.filter((item) => {
     if (item.people) {
@@ -51,7 +51,7 @@ const Person = () => {
         <button className="person-back-button" onClick={() => navigate(-1)}>
           <MdOutlineArrowBackIos />
         </button>{" "}
-        <span className="person-title">{configData.PEOPLE.PERSON_HEADER}</span>
+        <span className="person-title">{configData.PEOPLE?.PERSON_HEADER}</span>
         {person.name}
       </h2>
       {getPersonTags(person)}

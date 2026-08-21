@@ -3,7 +3,7 @@ import configData from "../config.json";
 const ResetButton = ({ isFiltered, resetFilters }) => {
   const button = isFiltered ? (
     <button className="reset-button" onClick={() => resetFilters()}>
-      {configData.FILTER.RESET.LABEL}
+      {configData.FILTER?.RESET?.LABEL ?? "Reset filters"}
     </button>
   ) : (
     ""

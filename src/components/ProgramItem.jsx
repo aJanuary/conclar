@@ -90,7 +90,7 @@ const ProgramItem = ({ item, forceExpanded = false, now }) => {
     ) : null;
 
   const permaLink =
-    configData.PERMALINK.SHOW_PERMALINK && configData.INTERACTIVE ? (
+    configData.PERMALINK?.SHOW_PERMALINK && configData.INTERACTIVE ? (
       <div className="item-permalink">
         <Link
           to={"/id/" + item.id}
@@ -105,7 +105,7 @@ const ProgramItem = ({ item, forceExpanded = false, now }) => {
 
   const tags = [];
   const itemTags = item.tags.filter(
-    (tag) => !configData.TAGS.DONTLIST.includes(tag.category)
+    (tag) => !configData.TAGS?.DONTLIST?.includes(tag.category)
   );
 
   for (const tag of itemTags) {
@@ -126,7 +126,7 @@ const ProgramItem = ({ item, forceExpanded = false, now }) => {
   }
   const safeDesc = DOMPurify.sanitize(
     item.desc,
-    configData.ITEM_DESCRIPTION.PURIFY_OPTIONS
+    configData.ITEM_DESCRIPTION?.PURIFY_OPTIONS
   );
 
   const links = [];
@@ -148,7 +148,7 @@ const ProgramItem = ({ item, forceExpanded = false, now }) => {
     });
   }
 
-  if ("MAPPING" in configData.LOCATIONS) {
+  if (configData.LOCATIONS && "MAPPING" in configData.LOCATIONS) {
     for (const location of configData.LOCATIONS.MAPPING) {
       if (item.loc.toString() === location.KEY) {
         links.push(
@@ -165,7 +165,7 @@ const ProgramItem = ({ item, forceExpanded = false, now }) => {
   }
 
   const duration =
-    configData.DURATION.SHOW_DURATION && item.mins ? (
+    configData.DURATION?.SHOW_DURATION && item.mins ? (
       <div className="item-duration">
         {configData.DURATION.DURATION_LABEL.replace("@mins", item.mins)}
       </div>
@@ -191,15 +191,16 @@ const ProgramItem = ({ item, forceExpanded = false, now }) => {
       : null;
   let startTime;
   if (localTime) {
-    startTime = configData.START_TIME.START_TIME_WITH_LOCAL_LABEL.replace(
-      "@local_time",
-      localTime
-    ).replace("@con_time", conTime);
+    startTime = (
+      configData.START_TIME?.START_TIME_WITH_LOCAL_LABEL ??
+      "Starts: @con_time con time, @local_time local time"
+    )
+      .replace("@local_time", localTime)
+      .replace("@con_time", conTime);
   } else {
-    startTime = configData.START_TIME.START_TIME_LABEL.replace(
-      "@con_time",
-      conTime
-    );
+    startTime = (
+      configData.START_TIME?.START_TIME_LABEL ?? "Starts: @con_time"
+    ).replace("@con_time", conTime);
   }
 
   const [ref, bounds] = useMeasure();
@@ -220,8 +221,8 @@ const ProgramItem = ({ item, forceExpanded = false, now }) => {
     config: {
       tension: 300,
       friction: 15,
-      clamp: true, 
-      ...configData.EXPAND.SPRING_CONFIG
+      clamp: true,
+      ...configData.EXPAND?.SPRING_CONFIG
     },
     onRest: () => {
       if (!showExpanded) setDetailsVisible(false);

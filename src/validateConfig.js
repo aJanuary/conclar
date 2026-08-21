@@ -1,3 +1,15 @@
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import Ajv2020 from "ajv/dist/2020.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const schema = JSON.parse(
+  fs.readFileSync(path.join(__dirname, "configSchema.json"), "utf-8")
+);
+const ajv = new Ajv2020({ allErrors: true, strict: true });
+const validateSchema = ajv.compile(schema);
+
 /**
  * Validate config.json
  *
@@ -11,8 +23,14 @@
  */
 export function validateConfig(configData) {
   const errors = [];
-  validateDataSourceConfig(configData, errors);
-  validateVenuesConfig(configData, errors);
+  validateConfigSchema(configData, errors);
+  try {
+    validateDataSourceConfig(configData, errors);
+    validateVenuesConfig(configData, errors);
+  } catch {
+    // configData didn't match the expected shape closely enough for these
+    // checks to run; the schema errors above already explain why.
+  }
   if (errors.length > 0) {
     throw new Error(
       "Invalid config.json:\n - " + errors.join("\n - ")
@@ -21,9 +39,43 @@ export function validateConfig(configData) {
 }
 
 /**
- * Validate that DATA_URLS and the legacy PROGRAM_DATA_URL/PEOPLE_DATA_URL
- * keys aren't ambiguously combined, and that DATA_URLS itself specifies
- * exactly one of COMBINED or the SCHEDULE+PEOPLE pair.
+ * Validate configData against configSchema.json, converting ajv's errors
+ * into the same dotted/bracket path style used by the hand-written checks
+ * below (e.g. VENUES.MAPPING[0].NAME).
+ *
+ * @param {object} configData Parsed contents of config.json.
+ * @param {string[]} errors Accumulator for problem descriptions.
+ */
+function validateConfigSchema(configData, errors) {
+  if (!validateSchema(configData)) {
+    for (const err of validateSchema.errors) {
+      errors.push(formatAjvError(err));
+    }
+  }
+}
+
+/**
+ * @param {import("ajv").ErrorObject} err
+ * @returns {string}
+ */
+function formatAjvError(err) {
+  const path = err.instancePath
+    .replace(/^\//, "")
+    .replace(/\//g, ".")
+    .replace(/\.(\d+)/g, "[$1]");
+  const prefix = path ? `${path} ` : "config ";
+  if (err.keyword === "additionalProperties") {
+    const badKey = err.params.additionalProperty;
+    const location = path ? `${path}.${badKey}` : badKey;
+    return `${location} is not a recognized config key.`;
+  }
+  return `${prefix}${err.message}`;
+}
+
+/**
+ * Validate that exactly one of DATA_URLS or the legacy
+ * PROGRAM_DATA_URL/PEOPLE_DATA_URL pair is given, and that DATA_URLS itself
+ * specifies exactly one of COMBINED or the SCHEDULE+PEOPLE pair.
  *
  * @param {object} configData Parsed contents of config.json.
  * @param {string[]} errors Accumulator for problem descriptions.
@@ -37,6 +89,10 @@ function validateDataSourceConfig(configData, errors) {
   if (hasLegacyUrls && hasDataUrls) {
     errors.push(
       "config.json cannot specify both DATA_URLS and PROGRAM_DATA_URL/PEOPLE_DATA_URL."
+    );
+  } else if (!hasLegacyUrls && !hasDataUrls) {
+    errors.push(
+      "config.json must specify either DATA_URLS or PROGRAM_DATA_URL/PEOPLE_DATA_URL."
     );
   }
 

@@ -1,0 +1,243 @@
+# ConClár configuration reference
+
+This document is generated from `src/configSchema.json` via `npm run docs:generate`. Do not edit it by hand — edit the schema instead and regenerate.
+
+Copy `src/config_example.json` to `src/config.json` and customise. See the [Getting Started](../README.md#getting-started) section of the README for details.
+
+- `APP_ID` (string, required) — A unique id to distinguish between instances of multi-year conventions.
+- `APP_TITLE` (string, required) — The title to appear at the top of the webpage, and in the browser window title.
+- `PROGRAM_DATA_URL` (string) — Legacy config for the address of the file containing programme data, in the bare-array format. If the same as PEOPLE_DATA_URL, both will be read from one file, but programme data must come before people data. Mutually exclusive with DATA_URLS; exactly one of DATA_URLS or the PROGRAM_DATA_URL/PEOPLE_DATA_URL pair must be given.
+- `PEOPLE_DATA_URL` (string) — Legacy config for the address of the file containing people data, in the bare-array format. If the same as PROGRAM_DATA_URL, both will be read from one file, but programme data must come before people data. Mutually exclusive with DATA_URLS; exactly one of DATA_URLS or the PROGRAM_DATA_URL/PEOPLE_DATA_URL pair must be given.
+- `DATA_URLS` (object) — The address(es) of the schedule/people data files, in the self-describing schemaVersion object format. Specify COMBINED for both from one file, or SCHEDULE and PEOPLE together for separate files. Specifying both COMBINED and SCHEDULE/PEOPLE together, or only one of SCHEDULE/PEOPLE, is a config error, enforced at validation time rather than by this schema. Mutually exclusive with PROGRAM_DATA_URL/PEOPLE_DATA_URL; exactly one of DATA_URLS or that legacy pair must be given. See docs/conclar_file_specs.md for the fetched file format.
+- `DATA_URLS.COMBINED` (string) — Address of a single file containing both schedule and people data. Mutually exclusive with SCHEDULE/PEOPLE.
+- `DATA_URLS.SCHEDULE` (string) — Address of the file containing schedule data. Must be given together with PEOPLE.
+- `DATA_URLS.PEOPLE` (string) — Address of the file containing people data. Must be given together with SCHEDULE.
+- `FETCH_OPTIONS` (object) — Options to pass when fetching data. See JavaScript fetch() documentation for the full set of available values; any option not listed below is still accepted and passed through.
+- `FETCH_OPTIONS.cache` (string) — Should generally be set to "reload" so back-end program updates will be read rather than served from the browser cache.
+- `FETCH_OPTIONS.credentials` (string) — Set to "omit" if the data source is not using a certificate from a recognised authority, e.g. a self-signed cert.
+- `FETCH_OPTIONS.headers` (object) — Headers sent in the fetch. Origin may be required for Cross Origin Resource Sharing (CORS).
+- `FETCH_OPTIONS_FIRST` (object) — Same as FETCH_OPTIONS, but used only for the first fetch of data (e.g. to allow different credentials/cache behaviour on initial load).
+- `FETCH_OPTIONS_FIRST.cache` (string)
+- `FETCH_OPTIONS_FIRST.credentials` (string)
+- `FETCH_OPTIONS_FIRST.headers` (object)
+- `TIMEZONE` (string, required) — The name of the timezone where your convention takes place (e.g. "Europe/Dublin"). Viewers outside convention timezone will see times in convention time, and their local time below it.
+- `TIMEZONECODE` (string, required) — The short code for the convention timezone (e.g. "IST"). Set to an empty string to get the browser's code for the timezone (not recommended, as it may not select the most elegant short code). Must be present (may be empty) - the app reads it unconditionally when displaying local time.
+- `INTERACTIVE` (boolean) — Set to false to get a non-interactive, expanded view of the schedule. The info page is also included, but not the participant list, individual participant pages, or individual item pages (regardless of the PERMALINK.SHOW_PERMALINK setting).
+- `HEADER` (object, required) — Add an optional image to the header of the pages.
+- `HEADER.IMG_SRC` (string) — Set to the image filename to display. May be a file in the public directory. Leave blank for no image.
+- `HEADER.IMG_ALT_TEXT` (string) — Set to the alt text that should display for the image.
+- `HEADER.LINEFEED_AFTER_URL` (boolean) — If true, place a line feed after the image.
+- `NAVIGATION` (object, required) — Each value in this section sets the label that will appear on main navigation of the site. Useful for switching between different international spellings of "programme".
+- `NAVIGATION.PROGRAM` (string) — Label for program/programme menu.
+- `NAVIGATION.PEOPLE` (string) — Label for people menu.
+- `NAVIGATION.MYSCHEDULE` (string) — Label for user's personal schedule.
+- `NAVIGATION.INFO` (string) — Label for the Information menu link.
+- `NAVIGATION.SETTINGS` (string) — Label for the Settings menu link.
+- `NAVIGATION.EXTRA` (array of object) — An array of extra menu links. To have no extra links, set to an empty array or omit EXTRA entirely.
+- `NAVIGATION.EXTRA[].LABEL` (string) — Text of the extra navigation link.
+- `NAVIGATION.EXTRA[].URL` (string) — URL the extra navigation link points to.
+- `NAVIGATION.EXTRA[].ICON_NAME` (string) — Name of a built-in icon to show before the label, e.g. "Home". Available names: Discord, Envelope, Facebook, Globe, Home, Instagram, Map, Mastodon, PaperPlane, Question, Sign, Ticket, Twitter, Youtube. (To add more, see iconsByName in src/components/NavIcon.js.) If both ICON_NAME and ICON_URL are given, ICON_NAME takes precedence.
+- `NAVIGATION.EXTRA[].ICON_URL` (string) — URL of an image to use as the icon instead of a built-in one. Used only if ICON_NAME isn't given.
+- `HELP_TEXT` (object) — Text shown to new visitors to introduce the site's features.
+- `HELP_TEXT.WELCOME` (string) — Text to display to new visitors who haven't selected any programme items.
+- `HELP_TEXT.SHARING` (string) — Text to display when user has selected items, informing them of sharing options.
+- `HELP_TEXT.CLOSE_ARIA_LABEL` (string) — Label to describe dismiss button.
+- `LOCATIONS` (object) — Configures the location filter and optional links to maps for each location.
+- `LOCATIONS.SEARCHABLE` (boolean) — Whether the location list can be searched by typing. (Searching can be inconvenient on touch screens.)
+- `LOCATIONS.LABEL` (string) — Label to show on map links.
+- `LOCATIONS.MAPPING` (array of object) — Array of locations, with links to show on map.
+- `LOCATIONS.MAPPING[].KEY` (string) — Room name, matching the location name used in the programme data.
+- `LOCATIONS.MAPPING[].MAP_URL` (string) — Link to a map for this location.
+- `VENUES` (object) — Groups locations by venue, for conventions spanning more than one building. If omitted, the locations drop-down is a flat, ungrouped list.
+- `VENUES.ALL_LABEL` (string) — Label template for the "select this whole venue" option shown at the top of each venue's group in the locations drop-down. @venue is replaced with the venue name. Defaults to "All @venue".
+- `VENUES.UNGROUPED_LABEL` (string) — Label for the group heading shown above locations that aren't listed under any venue. Defaults to "Other".
+- `VENUES.MAPPING` (array of object) — Array of venues. Venues are listed in the locations drop-down in the order given here. A location may only belong to one venue; locations not listed under any venue are shown grouped under UNGROUPED_LABEL, below the venue groups. Selecting a venue's "All <venue>" option shows every programme item in any of that venue's locations. Venue names must be unique and a location may not be assigned to more than one venue - enforced at validation time, not by this schema.
+- `VENUES.MAPPING[].NAME` (string) — Venue name, shown in the locations drop-down.
+- `VENUES.MAPPING[].LOCATIONS` (array of string) — Location names (matching LOCATIONS.MAPPING keys / programme data location names) that belong to this venue.
+- `APPLICATION` (object, required) — General application-wide settings.
+- `APPLICATION.LOADING` (object)
+- `APPLICATION.LOADING.MESSAGE` (string) — Message to display while loading.
+- `PROGRAM` (object, required) — Settings for the main programme list, My Schedule, and shared-items pages.
+- `PROGRAM.LIMIT` (object) — Controls the "maximum items displayed" drop-down on the programme page.
+- `PROGRAM.LIMIT.SHOW` (boolean) — If true, "limit number of items" drop-down will be displayed.
+- `PROGRAM.LIMIT.LABEL` (string) — Label for limit drop-down.
+- `PROGRAM.LIMIT.OPTIONS` (array of integer) — Options for the limit drop-down.
+- `PROGRAM.LIMIT.ALL_LABEL` (string) — Label to show for the "All" entry.
+- `PROGRAM.LIMIT.DEFAULT` (integer) — Default value for the limit drop-down.
+- `PROGRAM.LIMIT.SHOW_MORE` (object)
+- `PROGRAM.LIMIT.SHOW_MORE.LABEL` (string) — Label for the "Show more" button.
+- `PROGRAM.LIMIT.SHOW_MORE.NO_MORE` (string) — Message to display when no more items are available.
+- `PROGRAM.LIMIT.SHOW_MORE.NUM_EXTRA` (integer) — Number of items to add when "Show more" is pressed.
+- `PROGRAM.SEARCH` (object)
+- `PROGRAM.SEARCH.SEARCH_LABEL` (string) — Placeholder for the programme search box.
+- `PROGRAM.MY_SCHEDULE` (object) — Settings for the My Schedule page.
+- `PROGRAM.MY_SCHEDULE.TITLE` (string) — Title of My Schedule page.
+- `PROGRAM.MY_SCHEDULE.EMPTY` (object)
+- `PROGRAM.MY_SCHEDULE.EMPTY.TEXT` (string) — Text to display on My Schedule when no programme items are selected.
+- `PROGRAM.MY_SCHEDULE.INTRO` (string) — Introduction text for the My Schedule page.
+- `PROGRAM.MY_SCHEDULE.SHARE` (object) — Settings for the QR code / link sharing section of My Schedule.
+- `PROGRAM.MY_SCHEDULE.SHARE.LABEL` (string) — Heading for the shared link section on My Schedule.
+- `PROGRAM.MY_SCHEDULE.SHARE.DESCRIPTION` (string) — Descriptive message for the link sharing section.
+- `PROGRAM.MY_SCHEDULE.SHARE.LINK_LABEL` (string) — Label for the link when there is a single sharing link on the page.
+- `PROGRAM.MY_SCHEDULE.SHARE.MAX_LENGTH` (integer) — Maximum number of characters in each shareable link.
+- `PROGRAM.MY_SCHEDULE.SHARE.MULTIPLE_DESCRIPTION` (string) — Description to display when multiple links are shown.
+- `PROGRAM.MY_SCHEDULE.SHARE.MULTIPLE_LINK_LABEL` (string) — Label for a link when multiple links are shown. @number is replaced by the link's number.
+- `PROGRAM.SHARED` (object) — Settings for the page showing programme items shared via a link.
+- `PROGRAM.SHARED.TITLE` (string) — Title of the Shared Programme Items page.
+- `PROGRAM.SHARED.DESCRIPTION` (string) — Descriptive text for the page showing shared items.
+- `PROGRAM.SHARED.BUTTON_LABEL` (string) — Text for the "Add all to My Schedule" button.
+- `TAGS` (object) — Settings for the tag filter on the programme page.
+- `TAGS.PLACEHOLDER` (string) — The placeholder when selecting tags (unless separated).
+- `TAGS.SEARCHABLE` (boolean) — Whether the tag list can be searched by typing (unless separated).
+- `TAGS.HIDE` (boolean) — If true, hide the tags drop-down. Tags are still displayed on items.
+- `TAGS.SEPARATE` (array of object) — An array of tag prefixes to separate into individual drop-downs.
+- `TAGS.SEPARATE[].PREFIX` (string) — Tag prefix to separate out into its own drop-down, e.g. "type".
+- `TAGS.SEPARATE[].PLACEHOLDER` (string) — Placeholder for this drop-down.
+- `TAGS.SEPARATE[].SEARCHABLE` (boolean) — Whether this drop-down can be searched by typing.
+- `TAGS.SEPARATE[].HIDE` (boolean) — If true, hide this drop-down. Tags are still displayed on items.
+- `TAGS.FORMAT_AS_TAG` (boolean) — If set to true, turns Grenadine item format into a KonOpas-style "type" tag.
+- `TAGS.DAY_TAG` (object) — Settings for auto-generated per-day tags.
+- `TAGS.DAY_TAG.GENERATE` (boolean) — If set to true, will generate tags for each day of the convention.
+- `TAGS.DAY_TAG.DAYS` (object) — Key/value pairs mapping ISO weekday numbers (1 = Monday .. 7 = Sunday) to day names.
+- `TAGS.DAY_TAG.PLACEHOLDER` (string) — The placeholder for the "day" tags drop-down.
+- `TAGS.DAY_TAG.SEARCHABLE` (boolean) — Whether the day tag list can be searched by typing.
+- `TAGS.DAY_TAG.HIDE` (boolean) — If true, hide the day tags drop-down. Day tags are still shown on items if GENERATE is true.
+- `TAGS.DONTLIST` (array of string) — An array of tags not to list in the drop-downs and programme item tag lists.
+- `HIDE_BEFORE` (object) — Settings for the "hide items before this time" filter.
+- `HIDE_BEFORE.HIDE` (boolean) — If true, hide the "hide before" dropdown. If false, show a dropdown containing times to hide items before.
+- `HIDE_BEFORE.PLACEHOLDER` (string) — Placeholder text for the hide-before drop-down.
+- `HIDE_BEFORE.TIMES` (array of object) — Array of times to list in the hide-before drop-down. Times should be in convention timezone.
+- `HIDE_BEFORE.TIMES[].TIME` (string) — Time in hh:mm:ss format.
+- `HIDE_BEFORE.TIMES[].LABEL_24H` (string) — 24-hour format label for this time.
+- `HIDE_BEFORE.TIMES[].LABEL_12H` (string) — 12-hour format label for this time.
+- `FILTER` (object)
+- `FILTER.RESET` (object)
+- `FILTER.RESET.LABEL` (string) — The label for the "Reset filters" button.
+- `PERMALINK` (object)
+- `PERMALINK.SHOW_PERMALINK` (boolean) — If true, display a "permalink" icon when each program item is expanded.
+- `PERMALINK.PERMALINK_TITLE` (string) — "Title" text displayed when the mouse is hovered over the permalink icon.
+- `CALENDARLINK` (object)
+- `CALENDARLINK.SHOW` (boolean) — If true, display a calendar download icon when each program item is expanded.
+- `CALENDARLINK.TITLE` (string) — "Title" text displayed when the mouse is hovered over the calendar download icon.
+- `EXPAND` (object)
+- `EXPAND.EXPAND_ALL_LABEL` (string) — Label text for the Expand All button.
+- `EXPAND.COLLAPSE_ALL_LABEL` (string) — Label for the Collapse All button.
+- `EXPAND.SPRING_CONFIG` (object) — Config for the 'spring' animation used when expanding items. May be a simple duration, e.g. { "duration": 100 } to expand in 100ms, or can configure more dynamic spring effects, e.g. { "mass": 1, "tension": 1000, "friction": 30 }. Full list of options in the react-spring documentation (https://react-spring.io/common/configs).
+- `ITEM_DESCRIPTION` (object)
+- `ITEM_DESCRIPTION.PURIFY_OPTIONS` (object) — Additional options passed to DOMPurify when processing item descriptions. For the available options, see the DOMPurify documentation (https://github.com/cure53/DOMPurify#can-i-configure-dompurify).
+- `ITEM_DESCRIPTION.PURIFY_OPTIONS.FORBID_ATTR` (array of string)
+- `LINKS` (array of object) — An array of link types expected in the program data.
+- `LINKS[].NAME` (string) — The name of the link as it appears in the links object in the program data.
+- `LINKS[].TEXT` (string) — The text that should appear on this link in ConClár.
+- `LINKS[].TAG` (string) — An optional tag to add to every program item which includes a matching link. If using prefixed tags, include the prefix, e.g. "type:Workshop".
+- `LINKS[].WHEN` (array of string) — An optional array listing times when the link will be visible. Multiple values may be given, e.g. ["before", "during"], meaning the link is visible prior to the item and while it is happening, but disappears when it finishes. If omitted, the link is always visible.
+- `CONVENTION_TIME` (object)
+- `CONVENTION_TIME.NOTICE` (string) — Notice explaining that displayed times are convention time. @timezone is replaced with the convention timezone.
+- `LOCAL_TIME` (object)
+- `LOCAL_TIME.CHECKBOX_LABEL` (string) — Label for the "Show Local Time" checkbox.
+- `LOCAL_TIME.NOTICE` (string) — Notice telling users how local time is displayed. @timezone is replaced with the convention timezone.
+- `LOCAL_TIME.PREV_DAY` (string) — Label appended to local time if local time is before the start of the advertised day.
+- `LOCAL_TIME.NEXT_DAY` (string) — Label appended to local time if local time is after the end of the advertised day.
+- `LOCAL_TIME.FAILURE` (string) — Local time depends on string conversions, and could fail in some circumstances. Message to display if unable to convert.
+- `TIME_FORMAT` (object)
+- `TIME_FORMAT.DEFAULT_12HR` (boolean) — Set to true if you want time displayed in 12-hour format by default.
+- `TIME_FORMAT.SHOW_CHECKBOX` (boolean) — If set to false, users will not be given the option to change between 12 and 24 hour time.
+- `TIME_FORMAT.CHECKBOX_LABEL` (string) — Label for the 12-hour time checkbox.
+- `TIME_FORMAT.AM` (string) — Label for AM times.
+- `TIME_FORMAT.PM` (string) — Label for PM times.
+- `DURATION` (object)
+- `DURATION.SHOW_DURATION` (boolean) — If true, minutes from program data will be displayed.
+- `DURATION.DURATION_LABEL` (string) — Format for duration. @mins is replaced by the number of minutes. Do not translate @mins.
+- `START_TIME` (object)
+- `START_TIME.START_TIME_LABEL` (string) — Format for start time with just convention time, read by screen readers. @con_time is replaced by the start time. Do not translate @con_time.
+- `START_TIME.START_TIME_WITH_LOCAL_LABEL` (string) — Format for start time with both convention and local time, read by screen readers. @con_time and @local_time are replaced by the start times. Do not translate @con_time or @local_time.
+- `SHOW_PAST_ITEMS` (object)
+- `SHOW_PAST_ITEMS.SHOW_CHECKBOX` (boolean) — Set to true to show the "show past items" option during the convention; otherwise past programme items are shown by default.
+- `SHOW_PAST_ITEMS.CHECKBOX_LABEL` (string) — Label for the show-past-items checkbox.
+- `SHOW_PAST_ITEMS.ADJUST_MINUTES` (number) — Some wiggle room (in minutes) in order not to hide past items immediately as they start.
+- `SHOW_PAST_ITEMS.FROM_START` (boolean) — If true, adjust from the item's start time rather than its end time when deciding whether it's "past".
+- `PEOPLE` (object) — Settings for the people list and individual participant pages.
+- `PEOPLE.MODERATORS` (object)
+- `PEOPLE.MODERATORS.MODERATOR_LABEL` (string) — Label appended to a participant's name when they are the moderator of an item.
+- `PEOPLE.THUMBNAILS` (object)
+- `PEOPLE.THUMBNAILS.SHOW_THUMBNAILS` (boolean) — Set to false to not show member thumbnails (useful to remove spurious controls if pictures aren't in the data file).
+- `PEOPLE.THUMBNAILS.SHOW_CHECKBOX` (boolean) — Set to false to hide the "Show thumbnails" checkbox.
+- `PEOPLE.THUMBNAILS.CHECKBOX_LABEL` (string) — Label for the "Show thumbnails" checkbox.
+- `PEOPLE.THUMBNAILS.DEFAULT_IMAGE` (string) — Default thumbnail for participants with no photo. Can be a filename of an image in the public directory, or an external URL. Leave blank for no default thumbnail.
+- `PEOPLE.SORT` (object)
+- `PEOPLE.SORT.SHOW_CHECKBOX` (boolean) — Set to false to hide the "Sort by full name" checkbox. Useful if your data only contains "name for publications".
+- `PEOPLE.SORT.CHECKBOX_LABEL` (string) — Label for the "Sort by full name" checkbox.
+- `PEOPLE.TAGS` (object) — Settings for the tag filter on the people page. Same shape as the top-level TAGS section, but without DAY_TAG/FORMAT_AS_TAG/DONTLIST.
+- `PEOPLE.TAGS.PLACEHOLDER` (string) — The placeholder when selecting person tags (unless separated).
+- `PEOPLE.TAGS.SEARCHABLE` (boolean) — Whether the tag list can be searched by typing (unless separated).
+- `PEOPLE.TAGS.HIDE` (boolean) — If true, hide the tags drop-down. Tags are still displayed on people.
+- `PEOPLE.TAGS.SEPARATE` (array of object) — An array of tag prefixes to separate into individual drop-downs.
+- `PEOPLE.TAGS.SEPARATE[].PREFIX` (string)
+- `PEOPLE.TAGS.SEPARATE[].PLACEHOLDER` (string)
+- `PEOPLE.TAGS.SEPARATE[].SEARCHABLE` (boolean)
+- `PEOPLE.TAGS.SEPARATE[].HIDE` (boolean)
+- `PEOPLE.SEARCH` (object)
+- `PEOPLE.SEARCH.SHOW_SEARCH` (boolean) — Set to false to hide the people search box.
+- `PEOPLE.SEARCH.SEARCH_LABEL` (string) — Label for the people search box.
+- `PEOPLE.PERSON_HEADER` (string) — Prefix shown before a participant's name on their individual page.
+- `PEOPLE.BIO` (object)
+- `PEOPLE.BIO.PURIFY_OPTIONS` (object) — Additional options passed to DOMPurify when processing participant bios. For more details, see ITEM_DESCRIPTION.PURIFY_OPTIONS.
+- `PEOPLE.BIO.PURIFY_OPTIONS.FORBID_ATTR` (array of string)
+- `USELESS_CHECKBOX` (object)
+- `USELESS_CHECKBOX.CHECKBOX_LABEL` (string) — Label for any "useless" placeholder checkboxes used for layout alignment.
+- `INFORMATION` (object, required)
+- `INFORMATION.MARKDOWN_URL` (string) — The address of the Markdown file containing additional information about the convention. May be a relative path to a file in the public directory.
+- `INFORMATION.LOADING_MESSAGE` (string) — Text to show while the Markdown file is loading (usually never seen).
+- `SETTINGS` (object, required) — Labels for the Settings page.
+- `SETTINGS.TITLE` (object)
+- `SETTINGS.TITLE.LABEL` (string) — Label for the settings page.
+- `SETTINGS.TIME_FORMAT` (object)
+- `SETTINGS.TIME_FORMAT.LABEL` (string) — Label for the time format option group.
+- `SETTINGS.TIME_FORMAT.T12_HOUR_LABEL` (string) — Label for the 12 hour option.
+- `SETTINGS.TIME_FORMAT.T24_HOUR_LABEL` (string) — Label for the 24 hour option.
+- `SETTINGS.SHOW_LOCAL_TIME` (object)
+- `SETTINGS.SHOW_LOCAL_TIME.LABEL` (string) — Label for the Show Local Time option group.
+- `SETTINGS.SHOW_LOCAL_TIME.NEVER_LABEL` (string) — Label for the "Never show" option.
+- `SETTINGS.SHOW_LOCAL_TIME.DIFFERS_LABEL` (string) — Label for "Display if different from convention timezone".
+- `SETTINGS.SHOW_LOCAL_TIME.ALWAYS_LABEL` (string) — Label for the "Always display" option.
+- `SETTINGS.SHOW_TIMEZONE` (object)
+- `SETTINGS.SHOW_TIMEZONE.LABEL` (string) — Label for the "Show timezone after times" option group.
+- `SETTINGS.SHOW_TIMEZONE.NEVER_LABEL` (string) — Label for the "Never show" option.
+- `SETTINGS.SHOW_TIMEZONE.IF_LOCAL_LABEL` (string) — Label for "Show timezone if local time shown".
+- `SETTINGS.SHOW_TIMEZONE.ALWAYS_LABEL` (string) — Label for the "Always show" option.
+- `SETTINGS.SELECT_TIMEZONE` (object)
+- `SETTINGS.SELECT_TIMEZONE.LABEL` (string) — Label for the select-timezone group.
+- `SETTINGS.SELECT_TIMEZONE.BROWSER_DEFAULT_LABEL` (string) — Label to use the browser default timezone (will have the timezone name appended).
+- `SETTINGS.SELECT_TIMEZONE.SELECT_LABEL` (string) — Label to select an explicit timezone.
+- `SETTINGS.DARK_MODE` (object)
+- `SETTINGS.DARK_MODE.LABEL` (string) — Label for the dark mode settings group.
+- `SETTINGS.DARK_MODE.BROWSER_DEFAULT_LABEL` (string) — Label for the default browser dark-mode preference option.
+- `SETTINGS.DARK_MODE.BROWSER_LIGHT_LABEL` (string) — Label indicating the browser is currently in light mode.
+- `SETTINGS.DARK_MODE.BROWSER_DARK_LABEL` (string) — Label indicating the browser is currently in dark mode.
+- `SETTINGS.DARK_MODE.LIGHT_MODE_LABEL` (string) — Label for forcing light mode.
+- `SETTINGS.DARK_MODE.DARK_MODE_LABEL` (string) — Label for forcing dark mode.
+- `FOOTER` (object, required)
+- `FOOTER.SITE_NOTE_MARKDOWN` (string) — General note displayed in the footer of the page. May use Markdown for links, emphasis, etc.
+- `FOOTER.COPYRIGHT_MARKDOWN` (string) — Copyright notice, if required. May include Markdown.
+- `FOOTER.CONCLAR_NOTE_MARKDOWN` (string) — Note crediting ConClár. Free to remove or modify, but retaining it is politely requested to help promote this free tool.
+- `TIMER` (object, required)
+- `TIMER.FETCH_INTERVAL_MINS` (number) — Number of minutes between refreshes of program data.
+- `TIMER.TIMER_TICK_SECS` (number) — Number of seconds between checks of the timer.
+- `DEBUG_MODE` (object, required)
+- `DEBUG_MODE.ENABLE` (boolean) — If true, display a banner showing online status, and allowing manual data fetch.
+- `DEBUG_MODE.ONLINE_LABEL` (string) — Label to display in debug mode when online.
+- `DEBUG_MODE.OFFLINE_LABEL` (string) — Label to display in debug mode when offline.
+- `DEBUG_MODE.FETCH_BUTTON_LABEL` (string) — Label to display in debug mode on the Fetch button.
+- `SYNC` (object) — Enables syncing programme selections across devices via a sync server. If omitted, or if API_URL is empty, sync is disabled entirely and everything else works as normal (selections stay in browser local storage / QR-code sharing only). The sync server API is documented in docs/sync_server_api.md.
+- `SYNC.API_URL` (string) — The base URL of your sync server API, e.g. "https://auth.example-con.org/api". If omitted or empty, sync is disabled entirely.
+- `SYNC.LOADING_LABEL` (string) — Label shown while the profile is being fetched on startup.
+- `SYNC.LOGIN_LABEL` (string) — Label for the login link when the user is not authenticated.
+- `SYNC.LOGOUT_LABEL` (string) — Label for the logout link. @display_name is replaced with the user's display name.
+- `SYNC.ERROR_LABEL` (string) — Label for the error message when unable to connect to the sync server.
+- `SYNC.WARNING` (object) — The popup shown the first time an unauthenticated user adds or removes a selection, prompting them to log in.
+- `SYNC.WARNING.HEADING` (string) — Heading of the sync warning popup.
+- `SYNC.WARNING.TITLE` (string) — Main message body of the sync warning popup.
+- `SYNC.WARNING.DETAILS` (string) — Expandable detail text shown when the user clicks "More information" in the sync warning popup.
+- `SYNC.WARNING.DETAILS_LABEL` (string) — Label for the button that expands the detail text in the sync warning popup.
+- `SYNC.WARNING.LOGIN_LABEL` (string) — Label for the primary login button in the sync warning popup.
+- `SYNC.WARNING.DISMISS_LABEL` (string) — Label for the dismiss link in the sync warning popup.

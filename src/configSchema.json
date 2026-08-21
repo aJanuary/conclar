@@ -1,0 +1,723 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/lostcarpark/conclar/config-schema.json",
+  "title": "ConClár configuration",
+  "description": "Schema for src/config.json. Copy src/config_example.json to src/config.json and customise. This schema is the source of truth for docs/config_reference.md (generated via `npm run docs:generate`) and is validated automatically on `npm start`/`npm run build` and, against src/config_example.json, in CI.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "APP_ID",
+    "APP_TITLE",
+    "TIMEZONE",
+    "TIMEZONECODE",
+    "NAVIGATION",
+    "HEADER",
+    "PROGRAM",
+    "SETTINGS",
+    "FOOTER",
+    "APPLICATION",
+    "INFORMATION",
+    "DEBUG_MODE",
+    "TIMER"
+  ],
+  "properties": {
+    "APP_ID": {
+      "type": "string",
+      "description": "A unique id to distinguish between instances of multi-year conventions."
+    },
+    "APP_TITLE": {
+      "type": "string",
+      "description": "The title to appear at the top of the webpage, and in the browser window title."
+    },
+    "PROGRAM_DATA_URL": {
+      "type": "string",
+      "description": "Legacy config for the address of the file containing programme data, in the bare-array format. If the same as PEOPLE_DATA_URL, both will be read from one file, but programme data must come before people data. Mutually exclusive with DATA_URLS; exactly one of DATA_URLS or the PROGRAM_DATA_URL/PEOPLE_DATA_URL pair must be given."
+    },
+    "PEOPLE_DATA_URL": {
+      "type": "string",
+      "description": "Legacy config for the address of the file containing people data, in the bare-array format. If the same as PROGRAM_DATA_URL, both will be read from one file, but programme data must come before people data. Mutually exclusive with DATA_URLS; exactly one of DATA_URLS or the PROGRAM_DATA_URL/PEOPLE_DATA_URL pair must be given."
+    },
+    "DATA_URLS": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The address(es) of the schedule/people data files, in the self-describing schemaVersion object format. Specify COMBINED for both from one file, or SCHEDULE and PEOPLE together for separate files. Specifying both COMBINED and SCHEDULE/PEOPLE together, or only one of SCHEDULE/PEOPLE, is a config error, enforced at validation time rather than by this schema. Mutually exclusive with PROGRAM_DATA_URL/PEOPLE_DATA_URL; exactly one of DATA_URLS or that legacy pair must be given. See docs/conclar_file_specs.md for the fetched file format.",
+      "properties": {
+        "COMBINED": {
+          "type": "string",
+          "description": "Address of a single file containing both schedule and people data. Mutually exclusive with SCHEDULE/PEOPLE."
+        },
+        "SCHEDULE": {
+          "type": "string",
+          "description": "Address of the file containing schedule data. Must be given together with PEOPLE."
+        },
+        "PEOPLE": {
+          "type": "string",
+          "description": "Address of the file containing people data. Must be given together with SCHEDULE."
+        }
+      }
+    },
+    "FETCH_OPTIONS": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Options to pass when fetching data. See JavaScript fetch() documentation for the full set of available values; any option not listed below is still accepted and passed through.",
+      "properties": {
+        "cache": {
+          "type": "string",
+          "description": "Should generally be set to \"reload\" so back-end program updates will be read rather than served from the browser cache."
+        },
+        "credentials": {
+          "type": "string",
+          "description": "Set to \"omit\" if the data source is not using a certificate from a recognised authority, e.g. a self-signed cert."
+        },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Headers sent in the fetch. Origin may be required for Cross Origin Resource Sharing (CORS)."
+        }
+      }
+    },
+    "FETCH_OPTIONS_FIRST": {
+      "type": "object",
+      "additionalProperties": true,
+      "description": "Same as FETCH_OPTIONS, but used only for the first fetch of data (e.g. to allow different credentials/cache behaviour on initial load).",
+      "properties": {
+        "cache": { "type": "string" },
+        "credentials": { "type": "string" },
+        "headers": {
+          "type": "object",
+          "additionalProperties": { "type": "string" }
+        }
+      }
+    },
+    "TIMEZONE": {
+      "type": "string",
+      "description": "The name of the timezone where your convention takes place (e.g. \"Europe/Dublin\"). Viewers outside convention timezone will see times in convention time, and their local time below it."
+    },
+    "TIMEZONECODE": {
+      "type": "string",
+      "description": "The short code for the convention timezone (e.g. \"IST\"). Set to an empty string to get the browser's code for the timezone (not recommended, as it may not select the most elegant short code). Must be present (may be empty) - the app reads it unconditionally when displaying local time."
+    },
+    "INTERACTIVE": {
+      "type": "boolean",
+      "description": "Set to false to get a non-interactive, expanded view of the schedule. The info page is also included, but not the participant list, individual participant pages, or individual item pages (regardless of the PERMALINK.SHOW_PERMALINK setting)."
+    },
+    "HEADER": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Add an optional image to the header of the pages.",
+      "properties": {
+        "IMG_SRC": {
+          "type": "string",
+          "description": "Set to the image filename to display. May be a file in the public directory. Leave blank for no image."
+        },
+        "IMG_ALT_TEXT": {
+          "type": "string",
+          "description": "Set to the alt text that should display for the image."
+        },
+        "LINEFEED_AFTER_URL": {
+          "type": "boolean",
+          "description": "If true, place a line feed after the image."
+        }
+      }
+    },
+    "NAVIGATION": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Each value in this section sets the label that will appear on main navigation of the site. Useful for switching between different international spellings of \"programme\".",
+      "properties": {
+        "PROGRAM": { "type": "string", "description": "Label for program/programme menu." },
+        "PEOPLE": { "type": "string", "description": "Label for people menu." },
+        "MYSCHEDULE": { "type": "string", "description": "Label for user's personal schedule." },
+        "INFO": { "type": "string", "description": "Label for the Information menu link." },
+        "SETTINGS": { "type": "string", "description": "Label for the Settings menu link." },
+        "EXTRA": {
+          "type": "array",
+          "description": "An array of extra menu links. To have no extra links, set to an empty array or omit EXTRA entirely.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "LABEL": { "type": "string", "description": "Text of the extra navigation link." },
+              "URL": { "type": "string", "description": "URL the extra navigation link points to." },
+              "ICON_NAME": {
+                "type": "string",
+                "description": "Name of a built-in icon to show before the label, e.g. \"Home\". Available names: Discord, Envelope, Facebook, Globe, Home, Instagram, Map, Mastodon, PaperPlane, Question, Sign, Ticket, Twitter, Youtube. (To add more, see iconsByName in src/components/NavIcon.js.) If both ICON_NAME and ICON_URL are given, ICON_NAME takes precedence."
+              },
+              "ICON_URL": {
+                "type": "string",
+                "description": "URL of an image to use as the icon instead of a built-in one. Used only if ICON_NAME isn't given."
+              }
+            }
+          }
+        }
+      }
+    },
+    "HELP_TEXT": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Text shown to new visitors to introduce the site's features.",
+      "properties": {
+        "WELCOME": { "type": "string", "description": "Text to display to new visitors who haven't selected any programme items." },
+        "SHARING": { "type": "string", "description": "Text to display when user has selected items, informing them of sharing options." },
+        "CLOSE_ARIA_LABEL": { "type": "string", "description": "Label to describe dismiss button." }
+      }
+    },
+    "LOCATIONS": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Configures the location filter and optional links to maps for each location.",
+      "properties": {
+        "SEARCHABLE": { "type": "boolean", "description": "Whether the location list can be searched by typing. (Searching can be inconvenient on touch screens.)" },
+        "LABEL": { "type": "string", "description": "Label to show on map links." },
+        "MAPPING": {
+          "type": "array",
+          "description": "Array of locations, with links to show on map.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "KEY": { "type": "string", "description": "Room name, matching the location name used in the programme data." },
+              "MAP_URL": { "type": "string", "description": "Link to a map for this location." }
+            }
+          }
+        }
+      }
+    },
+    "VENUES": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Groups locations by venue, for conventions spanning more than one building. If omitted, the locations drop-down is a flat, ungrouped list.",
+      "properties": {
+        "ALL_LABEL": {
+          "type": "string",
+          "description": "Label template for the \"select this whole venue\" option shown at the top of each venue's group in the locations drop-down. @venue is replaced with the venue name. Defaults to \"All @venue\"."
+        },
+        "UNGROUPED_LABEL": {
+          "type": "string",
+          "description": "Label for the group heading shown above locations that aren't listed under any venue. Defaults to \"Other\"."
+        },
+        "MAPPING": {
+          "type": "array",
+          "description": "Array of venues. Venues are listed in the locations drop-down in the order given here. A location may only belong to one venue; locations not listed under any venue are shown grouped under UNGROUPED_LABEL, below the venue groups. Selecting a venue's \"All <venue>\" option shows every programme item in any of that venue's locations. Venue names must be unique and a location may not be assigned to more than one venue - enforced at validation time, not by this schema.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "NAME": { "type": "string", "description": "Venue name, shown in the locations drop-down." },
+              "LOCATIONS": {
+                "type": "array",
+                "description": "Location names (matching LOCATIONS.MAPPING keys / programme data location names) that belong to this venue.",
+                "items": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "APPLICATION": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "General application-wide settings.",
+      "properties": {
+        "LOADING": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "MESSAGE": { "type": "string", "description": "Message to display while loading." }
+          }
+        }
+      }
+    },
+    "PROGRAM": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Settings for the main programme list, My Schedule, and shared-items pages.",
+      "properties": {
+        "LIMIT": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Controls the \"maximum items displayed\" drop-down on the programme page.",
+          "properties": {
+            "SHOW": { "type": "boolean", "description": "If true, \"limit number of items\" drop-down will be displayed." },
+            "LABEL": { "type": "string", "description": "Label for limit drop-down." },
+            "OPTIONS": {
+              "type": "array",
+              "description": "Options for the limit drop-down.",
+              "items": { "type": "integer" }
+            },
+            "ALL_LABEL": { "type": "string", "description": "Label to show for the \"All\" entry." },
+            "DEFAULT": { "type": "integer", "description": "Default value for the limit drop-down." },
+            "SHOW_MORE": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "LABEL": { "type": "string", "description": "Label for the \"Show more\" button." },
+                "NO_MORE": { "type": "string", "description": "Message to display when no more items are available." },
+                "NUM_EXTRA": { "type": "integer", "description": "Number of items to add when \"Show more\" is pressed." }
+              }
+            }
+          }
+        },
+        "SEARCH": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "SEARCH_LABEL": { "type": "string", "description": "Placeholder for the programme search box." }
+          }
+        },
+        "MY_SCHEDULE": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Settings for the My Schedule page.",
+          "properties": {
+            "TITLE": { "type": "string", "description": "Title of My Schedule page." },
+            "EMPTY": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "TEXT": { "type": "string", "description": "Text to display on My Schedule when no programme items are selected." }
+              }
+            },
+            "INTRO": { "type": "string", "description": "Introduction text for the My Schedule page." },
+            "SHARE": {
+              "type": "object",
+              "additionalProperties": false,
+              "description": "Settings for the QR code / link sharing section of My Schedule.",
+              "properties": {
+                "LABEL": { "type": "string", "description": "Heading for the shared link section on My Schedule." },
+                "DESCRIPTION": { "type": "string", "description": "Descriptive message for the link sharing section." },
+                "LINK_LABEL": { "type": "string", "description": "Label for the link when there is a single sharing link on the page." },
+                "MAX_LENGTH": { "type": "integer", "description": "Maximum number of characters in each shareable link." },
+                "MULTIPLE_DESCRIPTION": { "type": "string", "description": "Description to display when multiple links are shown." },
+                "MULTIPLE_LINK_LABEL": { "type": "string", "description": "Label for a link when multiple links are shown. @number is replaced by the link's number." }
+              }
+            }
+          }
+        },
+        "SHARED": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Settings for the page showing programme items shared via a link.",
+          "properties": {
+            "TITLE": { "type": "string", "description": "Title of the Shared Programme Items page." },
+            "DESCRIPTION": { "type": "string", "description": "Descriptive text for the page showing shared items." },
+            "BUTTON_LABEL": { "type": "string", "description": "Text for the \"Add all to My Schedule\" button." }
+          }
+        }
+      }
+    },
+    "TAGS": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Settings for the tag filter on the programme page.",
+      "properties": {
+        "PLACEHOLDER": { "type": "string", "description": "The placeholder when selecting tags (unless separated)." },
+        "SEARCHABLE": { "type": "boolean", "description": "Whether the tag list can be searched by typing (unless separated)." },
+        "HIDE": { "type": "boolean", "description": "If true, hide the tags drop-down. Tags are still displayed on items." },
+        "SEPARATE": {
+          "type": "array",
+          "description": "An array of tag prefixes to separate into individual drop-downs.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "PREFIX": { "type": "string", "description": "Tag prefix to separate out into its own drop-down, e.g. \"type\"." },
+              "PLACEHOLDER": { "type": "string", "description": "Placeholder for this drop-down." },
+              "SEARCHABLE": { "type": "boolean", "description": "Whether this drop-down can be searched by typing." },
+              "HIDE": { "type": "boolean", "description": "If true, hide this drop-down. Tags are still displayed on items." }
+            }
+          }
+        },
+        "FORMAT_AS_TAG": { "type": "boolean", "description": "If set to true, turns Grenadine item format into a KonOpas-style \"type\" tag." },
+        "DAY_TAG": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Settings for auto-generated per-day tags.",
+          "properties": {
+            "GENERATE": { "type": "boolean", "description": "If set to true, will generate tags for each day of the convention." },
+            "DAYS": {
+              "type": "object",
+              "description": "Key/value pairs mapping ISO weekday numbers (1 = Monday .. 7 = Sunday) to day names.",
+              "additionalProperties": false,
+              "patternProperties": {
+                "^[1-7]$": { "type": "string" }
+              }
+            },
+            "PLACEHOLDER": { "type": "string", "description": "The placeholder for the \"day\" tags drop-down." },
+            "SEARCHABLE": { "type": "boolean", "description": "Whether the day tag list can be searched by typing." },
+            "HIDE": { "type": "boolean", "description": "If true, hide the day tags drop-down. Day tags are still shown on items if GENERATE is true." }
+          }
+        },
+        "DONTLIST": {
+          "type": "array",
+          "description": "An array of tags not to list in the drop-downs and programme item tag lists.",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "HIDE_BEFORE": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Settings for the \"hide items before this time\" filter.",
+      "properties": {
+        "HIDE": { "type": "boolean", "description": "If true, hide the \"hide before\" dropdown. If false, show a dropdown containing times to hide items before." },
+        "PLACEHOLDER": { "type": "string", "description": "Placeholder text for the hide-before drop-down." },
+        "TIMES": {
+          "type": "array",
+          "description": "Array of times to list in the hide-before drop-down. Times should be in convention timezone.",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "TIME": { "type": "string", "description": "Time in hh:mm:ss format." },
+              "LABEL_24H": { "type": "string", "description": "24-hour format label for this time." },
+              "LABEL_12H": { "type": "string", "description": "12-hour format label for this time." }
+            }
+          }
+        }
+      }
+    },
+    "FILTER": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "RESET": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "LABEL": { "type": "string", "description": "The label for the \"Reset filters\" button." }
+          }
+        }
+      }
+    },
+    "PERMALINK": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SHOW_PERMALINK": { "type": "boolean", "description": "If true, display a \"permalink\" icon when each program item is expanded." },
+        "PERMALINK_TITLE": { "type": "string", "description": "\"Title\" text displayed when the mouse is hovered over the permalink icon." }
+      }
+    },
+    "CALENDARLINK": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SHOW": { "type": "boolean", "description": "If true, display a calendar download icon when each program item is expanded." },
+        "TITLE": { "type": "string", "description": "\"Title\" text displayed when the mouse is hovered over the calendar download icon." }
+      }
+    },
+    "EXPAND": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "EXPAND_ALL_LABEL": { "type": "string", "description": "Label text for the Expand All button." },
+        "COLLAPSE_ALL_LABEL": { "type": "string", "description": "Label for the Collapse All button." },
+        "SPRING_CONFIG": {
+          "type": "object",
+          "description": "Config for the 'spring' animation used when expanding items. May be a simple duration, e.g. { \"duration\": 100 } to expand in 100ms, or can configure more dynamic spring effects, e.g. { \"mass\": 1, \"tension\": 1000, \"friction\": 30 }. Full list of options in the react-spring documentation (https://react-spring.io/common/configs).",
+          "additionalProperties": { "type": "number" }
+        }
+      }
+    },
+    "ITEM_DESCRIPTION": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "PURIFY_OPTIONS": {
+          "type": "object",
+          "description": "Additional options passed to DOMPurify when processing item descriptions. For the available options, see the DOMPurify documentation (https://github.com/cure53/DOMPurify#can-i-configure-dompurify).",
+          "additionalProperties": true,
+          "properties": {
+            "FORBID_ATTR": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "LINKS": {
+      "type": "array",
+      "description": "An array of link types expected in the program data.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "NAME": { "type": "string", "description": "The name of the link as it appears in the links object in the program data." },
+          "TEXT": { "type": "string", "description": "The text that should appear on this link in ConClár." },
+          "TAG": { "type": "string", "description": "An optional tag to add to every program item which includes a matching link. If using prefixed tags, include the prefix, e.g. \"type:Workshop\"." },
+          "WHEN": {
+            "type": "array",
+            "description": "An optional array listing times when the link will be visible. Multiple values may be given, e.g. [\"before\", \"during\"], meaning the link is visible prior to the item and while it is happening, but disappears when it finishes. If omitted, the link is always visible.",
+            "items": { "type": "string", "enum": ["before", "during", "after"] }
+          }
+        }
+      }
+    },
+    "CONVENTION_TIME": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "NOTICE": {
+          "type": "string",
+          "description": "Notice explaining that displayed times are convention time. @timezone is replaced with the convention timezone."
+        }
+      }
+    },
+    "LOCAL_TIME": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CHECKBOX_LABEL": { "type": "string", "description": "Label for the \"Show Local Time\" checkbox." },
+        "NOTICE": { "type": "string", "description": "Notice telling users how local time is displayed. @timezone is replaced with the convention timezone." },
+        "PREV_DAY": { "type": "string", "description": "Label appended to local time if local time is before the start of the advertised day." },
+        "NEXT_DAY": { "type": "string", "description": "Label appended to local time if local time is after the end of the advertised day." },
+        "FAILURE": { "type": "string", "description": "Local time depends on string conversions, and could fail in some circumstances. Message to display if unable to convert." }
+      }
+    },
+    "TIME_FORMAT": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "DEFAULT_12HR": { "type": "boolean", "description": "Set to true if you want time displayed in 12-hour format by default." },
+        "SHOW_CHECKBOX": { "type": "boolean", "description": "If set to false, users will not be given the option to change between 12 and 24 hour time." },
+        "CHECKBOX_LABEL": { "type": "string", "description": "Label for the 12-hour time checkbox." },
+        "AM": { "type": "string", "description": "Label for AM times." },
+        "PM": { "type": "string", "description": "Label for PM times." }
+      }
+    },
+    "DURATION": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SHOW_DURATION": { "type": "boolean", "description": "If true, minutes from program data will be displayed." },
+        "DURATION_LABEL": { "type": "string", "description": "Format for duration. @mins is replaced by the number of minutes. Do not translate @mins." }
+      }
+    },
+    "START_TIME": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "START_TIME_LABEL": { "type": "string", "description": "Format for start time with just convention time, read by screen readers. @con_time is replaced by the start time. Do not translate @con_time." },
+        "START_TIME_WITH_LOCAL_LABEL": { "type": "string", "description": "Format for start time with both convention and local time, read by screen readers. @con_time and @local_time are replaced by the start times. Do not translate @con_time or @local_time." }
+      }
+    },
+    "SHOW_PAST_ITEMS": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SHOW_CHECKBOX": { "type": "boolean", "description": "Set to true to show the \"show past items\" option during the convention; otherwise past programme items are shown by default." },
+        "CHECKBOX_LABEL": { "type": "string", "description": "Label for the show-past-items checkbox." },
+        "ADJUST_MINUTES": { "type": "number", "description": "Some wiggle room (in minutes) in order not to hide past items immediately as they start." },
+        "FROM_START": { "type": "boolean", "description": "If true, adjust from the item's start time rather than its end time when deciding whether it's \"past\"." }
+      }
+    },
+    "PEOPLE": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Settings for the people list and individual participant pages.",
+      "properties": {
+        "MODERATORS": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "MODERATOR_LABEL": { "type": "string", "description": "Label appended to a participant's name when they are the moderator of an item." }
+          }
+        },
+        "THUMBNAILS": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "SHOW_THUMBNAILS": { "type": "boolean", "description": "Set to false to not show member thumbnails (useful to remove spurious controls if pictures aren't in the data file)." },
+            "SHOW_CHECKBOX": { "type": "boolean", "description": "Set to false to hide the \"Show thumbnails\" checkbox." },
+            "CHECKBOX_LABEL": { "type": "string", "description": "Label for the \"Show thumbnails\" checkbox." },
+            "DEFAULT_IMAGE": { "type": "string", "description": "Default thumbnail for participants with no photo. Can be a filename of an image in the public directory, or an external URL. Leave blank for no default thumbnail." }
+          }
+        },
+        "SORT": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "SHOW_CHECKBOX": { "type": "boolean", "description": "Set to false to hide the \"Sort by full name\" checkbox. Useful if your data only contains \"name for publications\"." },
+            "CHECKBOX_LABEL": { "type": "string", "description": "Label for the \"Sort by full name\" checkbox." }
+          }
+        },
+        "TAGS": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "Settings for the tag filter on the people page. Same shape as the top-level TAGS section, but without DAY_TAG/FORMAT_AS_TAG/DONTLIST.",
+          "properties": {
+            "PLACEHOLDER": { "type": "string", "description": "The placeholder when selecting person tags (unless separated)." },
+            "SEARCHABLE": { "type": "boolean", "description": "Whether the tag list can be searched by typing (unless separated)." },
+            "HIDE": { "type": "boolean", "description": "If true, hide the tags drop-down. Tags are still displayed on people." },
+            "SEPARATE": {
+              "type": "array",
+              "description": "An array of tag prefixes to separate into individual drop-downs.",
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "PREFIX": { "type": "string" },
+                  "PLACEHOLDER": { "type": "string" },
+                  "SEARCHABLE": { "type": "boolean" },
+                  "HIDE": { "type": "boolean" }
+                }
+              }
+            }
+          }
+        },
+        "SEARCH": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "SHOW_SEARCH": { "type": "boolean", "description": "Set to false to hide the people search box." },
+            "SEARCH_LABEL": { "type": "string", "description": "Label for the people search box." }
+          }
+        },
+        "PERSON_HEADER": { "type": "string", "description": "Prefix shown before a participant's name on their individual page." },
+        "BIO": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "PURIFY_OPTIONS": {
+              "type": "object",
+              "description": "Additional options passed to DOMPurify when processing participant bios. For more details, see ITEM_DESCRIPTION.PURIFY_OPTIONS.",
+              "additionalProperties": true,
+              "properties": {
+                "FORBID_ATTR": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "USELESS_CHECKBOX": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "CHECKBOX_LABEL": { "type": "string", "description": "Label for any \"useless\" placeholder checkboxes used for layout alignment." }
+      }
+    },
+    "INFORMATION": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "MARKDOWN_URL": { "type": "string", "description": "The address of the Markdown file containing additional information about the convention. May be a relative path to a file in the public directory." },
+        "LOADING_MESSAGE": { "type": "string", "description": "Text to show while the Markdown file is loading (usually never seen)." }
+      }
+    },
+    "SETTINGS": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Labels for the Settings page.",
+      "properties": {
+        "TITLE": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "LABEL": { "type": "string", "description": "Label for the settings page." }
+          }
+        },
+        "TIME_FORMAT": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "LABEL": { "type": "string", "description": "Label for the time format option group." },
+            "T12_HOUR_LABEL": { "type": "string", "description": "Label for the 12 hour option." },
+            "T24_HOUR_LABEL": { "type": "string", "description": "Label for the 24 hour option." }
+          }
+        },
+        "SHOW_LOCAL_TIME": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "LABEL": { "type": "string", "description": "Label for the Show Local Time option group." },
+            "NEVER_LABEL": { "type": "string", "description": "Label for the \"Never show\" option." },
+            "DIFFERS_LABEL": { "type": "string", "description": "Label for \"Display if different from convention timezone\"." },
+            "ALWAYS_LABEL": { "type": "string", "description": "Label for the \"Always display\" option." }
+          }
+        },
+        "SHOW_TIMEZONE": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "LABEL": { "type": "string", "description": "Label for the \"Show timezone after times\" option group." },
+            "NEVER_LABEL": { "type": "string", "description": "Label for the \"Never show\" option." },
+            "IF_LOCAL_LABEL": { "type": "string", "description": "Label for \"Show timezone if local time shown\"." },
+            "ALWAYS_LABEL": { "type": "string", "description": "Label for the \"Always show\" option." }
+          }
+        },
+        "SELECT_TIMEZONE": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "LABEL": { "type": "string", "description": "Label for the select-timezone group." },
+            "BROWSER_DEFAULT_LABEL": { "type": "string", "description": "Label to use the browser default timezone (will have the timezone name appended)." },
+            "SELECT_LABEL": { "type": "string", "description": "Label to select an explicit timezone." }
+          }
+        },
+        "DARK_MODE": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "LABEL": { "type": "string", "description": "Label for the dark mode settings group." },
+            "BROWSER_DEFAULT_LABEL": { "type": "string", "description": "Label for the default browser dark-mode preference option." },
+            "BROWSER_LIGHT_LABEL": { "type": "string", "description": "Label indicating the browser is currently in light mode." },
+            "BROWSER_DARK_LABEL": { "type": "string", "description": "Label indicating the browser is currently in dark mode." },
+            "LIGHT_MODE_LABEL": { "type": "string", "description": "Label for forcing light mode." },
+            "DARK_MODE_LABEL": { "type": "string", "description": "Label for forcing dark mode." }
+          }
+        }
+      }
+    },
+    "FOOTER": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "SITE_NOTE_MARKDOWN": { "type": "string", "description": "General note displayed in the footer of the page. May use Markdown for links, emphasis, etc." },
+        "COPYRIGHT_MARKDOWN": { "type": "string", "description": "Copyright notice, if required. May include Markdown." },
+        "CONCLAR_NOTE_MARKDOWN": { "type": "string", "description": "Note crediting ConClár. Free to remove or modify, but retaining it is politely requested to help promote this free tool." }
+      }
+    },
+    "TIMER": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "FETCH_INTERVAL_MINS": { "type": "number", "description": "Number of minutes between refreshes of program data." },
+        "TIMER_TICK_SECS": { "type": "number", "description": "Number of seconds between checks of the timer." }
+      }
+    },
+    "DEBUG_MODE": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "ENABLE": { "type": "boolean", "description": "If true, display a banner showing online status, and allowing manual data fetch." },
+        "ONLINE_LABEL": { "type": "string", "description": "Label to display in debug mode when online." },
+        "OFFLINE_LABEL": { "type": "string", "description": "Label to display in debug mode when offline." },
+        "FETCH_BUTTON_LABEL": { "type": "string", "description": "Label to display in debug mode on the Fetch button." }
+      }
+    },
+    "SYNC": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "Enables syncing programme selections across devices via a sync server. If omitted, or if API_URL is empty, sync is disabled entirely and everything else works as normal (selections stay in browser local storage / QR-code sharing only). The sync server API is documented in docs/sync_server_api.md.",
+      "properties": {
+        "API_URL": { "type": "string", "description": "The base URL of your sync server API, e.g. \"https://auth.example-con.org/api\". If omitted or empty, sync is disabled entirely." },
+        "LOADING_LABEL": { "type": "string", "description": "Label shown while the profile is being fetched on startup." },
+        "LOGIN_LABEL": { "type": "string", "description": "Label for the login link when the user is not authenticated." },
+        "LOGOUT_LABEL": { "type": "string", "description": "Label for the logout link. @display_name is replaced with the user's display name." },
+        "ERROR_LABEL": { "type": "string", "description": "Label for the error message when unable to connect to the sync server." },
+        "WARNING": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "The popup shown the first time an unauthenticated user adds or removes a selection, prompting them to log in.",
+          "properties": {
+            "HEADING": { "type": "string", "description": "Heading of the sync warning popup." },
+            "TITLE": { "type": "string", "description": "Main message body of the sync warning popup." },
+            "DETAILS": { "type": "string", "description": "Expandable detail text shown when the user clicks \"More information\" in the sync warning popup." },
+            "DETAILS_LABEL": { "type": "string", "description": "Label for the button that expands the detail text in the sync warning popup." },
+            "LOGIN_LABEL": { "type": "string", "description": "Label for the primary login button in the sync warning popup." },
+            "DISMISS_LABEL": { "type": "string", "description": "Label for the dismiss link in the sync warning popup." }
+          }
+        }
+      }
+    }
+  }
+}
