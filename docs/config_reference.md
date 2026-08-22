@@ -28,11 +28,11 @@ Copy `src/config_example.json` to `src/config.json` and customise. See the [Gett
 - `HEADER.IMG_ALT_TEXT` (string) — Set to the alt text that should display for the image.
 - `HEADER.LINEFEED_AFTER_URL` (boolean) — If true, place a line feed after the image.
 - `NAVIGATION` (object, required) — Each value in this section sets the label that will appear on main navigation of the site. Useful for switching between different international spellings of "programme".
-- `NAVIGATION.PROGRAM` (string) — Label for program/programme menu.
-- `NAVIGATION.PEOPLE` (string) — Label for people menu.
-- `NAVIGATION.MYSCHEDULE` (string) — Label for user's personal schedule.
+- `NAVIGATION.PROGRAM` (string, required) — Label for program/programme menu.
+- `NAVIGATION.PEOPLE` (string, required) — Label for people menu.
+- `NAVIGATION.MYSCHEDULE` (string, required) — Label for user's personal schedule.
 - `NAVIGATION.INFO` (string) — Label for the Information menu link.
-- `NAVIGATION.SETTINGS` (string) — Label for the Settings menu link.
+- `NAVIGATION.SETTINGS` (string, required) — Label for the Settings menu link.
 - `NAVIGATION.EXTRA` (array of object) — An array of extra menu links. To have no extra links, set to an empty array or omit EXTRA entirely.
 - `NAVIGATION.EXTRA[].LABEL` (string) — Text of the extra navigation link.
 - `NAVIGATION.EXTRA[].URL` (string) — URL the extra navigation link points to.
@@ -55,37 +55,37 @@ Copy `src/config_example.json` to `src/config.json` and customise. See the [Gett
 - `VENUES.MAPPING[].NAME` (string) — Venue name, shown in the locations drop-down.
 - `VENUES.MAPPING[].LOCATIONS` (array of string) — Location names (matching LOCATIONS.MAPPING keys / programme data location names) that belong to this venue.
 - `APPLICATION` (object, required) — General application-wide settings.
-- `APPLICATION.LOADING` (object)
-- `APPLICATION.LOADING.MESSAGE` (string) — Message to display while loading.
+- `APPLICATION.LOADING` (object, required)
+- `APPLICATION.LOADING.MESSAGE` (string, required) — Message to display while loading.
 - `PROGRAM` (object, required) — Settings for the main programme list, My Schedule, and shared-items pages.
-- `PROGRAM.LIMIT` (object) — Controls the "maximum items displayed" drop-down on the programme page.
+- `PROGRAM.LIMIT` (object, required) — Controls the "maximum items displayed" drop-down on the programme page.
 - `PROGRAM.LIMIT.SHOW` (boolean) — If true, "limit number of items" drop-down will be displayed.
 - `PROGRAM.LIMIT.LABEL` (string) — Label for limit drop-down.
 - `PROGRAM.LIMIT.OPTIONS` (array of integer) — Options for the limit drop-down.
 - `PROGRAM.LIMIT.ALL_LABEL` (string) — Label to show for the "All" entry.
-- `PROGRAM.LIMIT.DEFAULT` (integer) — Default value for the limit drop-down.
-- `PROGRAM.LIMIT.SHOW_MORE` (object)
-- `PROGRAM.LIMIT.SHOW_MORE.LABEL` (string) — Label for the "Show more" button.
-- `PROGRAM.LIMIT.SHOW_MORE.NO_MORE` (string) — Message to display when no more items are available.
-- `PROGRAM.LIMIT.SHOW_MORE.NUM_EXTRA` (integer) — Number of items to add when "Show more" is pressed.
-- `PROGRAM.SEARCH` (object)
-- `PROGRAM.SEARCH.SEARCH_LABEL` (string) — Placeholder for the programme search box.
-- `PROGRAM.MY_SCHEDULE` (object) — Settings for the My Schedule page.
-- `PROGRAM.MY_SCHEDULE.TITLE` (string) — Title of My Schedule page.
-- `PROGRAM.MY_SCHEDULE.EMPTY` (object)
-- `PROGRAM.MY_SCHEDULE.EMPTY.TEXT` (string) — Text to display on My Schedule when no programme items are selected.
-- `PROGRAM.MY_SCHEDULE.INTRO` (string) — Introduction text for the My Schedule page.
-- `PROGRAM.MY_SCHEDULE.SHARE` (object) — Settings for the QR code / link sharing section of My Schedule.
-- `PROGRAM.MY_SCHEDULE.SHARE.LABEL` (string) — Heading for the shared link section on My Schedule.
-- `PROGRAM.MY_SCHEDULE.SHARE.DESCRIPTION` (string) — Descriptive message for the link sharing section.
-- `PROGRAM.MY_SCHEDULE.SHARE.LINK_LABEL` (string) — Label for the link when there is a single sharing link on the page.
-- `PROGRAM.MY_SCHEDULE.SHARE.MAX_LENGTH` (integer) — Maximum number of characters in each shareable link.
-- `PROGRAM.MY_SCHEDULE.SHARE.MULTIPLE_DESCRIPTION` (string) — Description to display when multiple links are shown.
-- `PROGRAM.MY_SCHEDULE.SHARE.MULTIPLE_LINK_LABEL` (string) — Label for a link when multiple links are shown. @number is replaced by the link's number.
-- `PROGRAM.SHARED` (object) — Settings for the page showing programme items shared via a link.
-- `PROGRAM.SHARED.TITLE` (string) — Title of the Shared Programme Items page.
-- `PROGRAM.SHARED.DESCRIPTION` (string) — Descriptive text for the page showing shared items.
-- `PROGRAM.SHARED.BUTTON_LABEL` (string) — Text for the "Add all to My Schedule" button.
+- `PROGRAM.LIMIT.DEFAULT` (integer, required) — Default value for the limit drop-down.
+- `PROGRAM.LIMIT.SHOW_MORE` (object, required)
+- `PROGRAM.LIMIT.SHOW_MORE.LABEL` (string, required) — Label for the "Show more" button.
+- `PROGRAM.LIMIT.SHOW_MORE.NO_MORE` (string, required) — Message to display when no more items are available.
+- `PROGRAM.LIMIT.SHOW_MORE.NUM_EXTRA` (integer, required) — Number of items to add when "Show more" is pressed.
+- `PROGRAM.SEARCH` (object, required)
+- `PROGRAM.SEARCH.SEARCH_LABEL` (string, required) — Placeholder for the programme search box.
+- `PROGRAM.MY_SCHEDULE` (object, required) — Settings for the My Schedule page.
+- `PROGRAM.MY_SCHEDULE.TITLE` (string, required) — Title of My Schedule page.
+- `PROGRAM.MY_SCHEDULE.EMPTY` (object, required)
+- `PROGRAM.MY_SCHEDULE.EMPTY.TEXT` (string, required) — Text to display on My Schedule when no programme items are selected.
+- `PROGRAM.MY_SCHEDULE.INTRO` (string, required) — Introduction text for the My Schedule page.
+- `PROGRAM.MY_SCHEDULE.SHARE` (object, required) — Settings for the QR code / link sharing section of My Schedule.
+- `PROGRAM.MY_SCHEDULE.SHARE.LABEL` (string, required) — Heading for the shared link section on My Schedule.
+- `PROGRAM.MY_SCHEDULE.SHARE.DESCRIPTION` (string, required) — Descriptive message for the link sharing section.
+- `PROGRAM.MY_SCHEDULE.SHARE.LINK_LABEL` (string, required) — Label for the link when there is a single sharing link on the page.
+- `PROGRAM.MY_SCHEDULE.SHARE.MAX_LENGTH` (integer, required) — Maximum number of characters in each shareable link.
+- `PROGRAM.MY_SCHEDULE.SHARE.MULTIPLE_DESCRIPTION` (string, required) — Description to display when multiple links are shown.
+- `PROGRAM.MY_SCHEDULE.SHARE.MULTIPLE_LINK_LABEL` (string, required) — Label for a link when multiple links are shown. @number is replaced by the link's number.
+- `PROGRAM.SHARED` (object, required) — Settings for the page showing programme items shared via a link.
+- `PROGRAM.SHARED.TITLE` (string, required) — Title of the Shared Programme Items page.
+- `PROGRAM.SHARED.DESCRIPTION` (string, required) — Descriptive text for the page showing shared items.
+- `PROGRAM.SHARED.BUTTON_LABEL` (string, required) — Text for the "Add all to My Schedule" button.
 - `TAGS` (object) — Settings for the tag filter on the programme page.
 - `TAGS.PLACEHOLDER` (string) — The placeholder when selecting tags (unless separated).
 - `TAGS.SEARCHABLE` (boolean) — Whether the tag list can be searched by typing (unless separated).
@@ -186,43 +186,43 @@ Copy `src/config_example.json` to `src/config.json` and customise. See the [Gett
 - `USELESS_CHECKBOX` (object)
 - `USELESS_CHECKBOX.CHECKBOX_LABEL` (string) — Label for any "useless" placeholder checkboxes used for layout alignment.
 - `INFORMATION` (object, required)
-- `INFORMATION.MARKDOWN_URL` (string) — The address of the Markdown file containing additional information about the convention. May be a relative path to a file in the public directory.
+- `INFORMATION.MARKDOWN_URL` (string, required) — The address of the Markdown file containing additional information about the convention. May be a relative path to a file in the public directory.
 - `INFORMATION.LOADING_MESSAGE` (string) — Text to show while the Markdown file is loading (usually never seen).
 - `SETTINGS` (object, required) — Labels for the Settings page.
-- `SETTINGS.TITLE` (object)
-- `SETTINGS.TITLE.LABEL` (string) — Label for the settings page.
-- `SETTINGS.TIME_FORMAT` (object)
-- `SETTINGS.TIME_FORMAT.LABEL` (string) — Label for the time format option group.
-- `SETTINGS.TIME_FORMAT.T12_HOUR_LABEL` (string) — Label for the 12 hour option.
-- `SETTINGS.TIME_FORMAT.T24_HOUR_LABEL` (string) — Label for the 24 hour option.
-- `SETTINGS.SHOW_LOCAL_TIME` (object)
-- `SETTINGS.SHOW_LOCAL_TIME.LABEL` (string) — Label for the Show Local Time option group.
-- `SETTINGS.SHOW_LOCAL_TIME.NEVER_LABEL` (string) — Label for the "Never show" option.
-- `SETTINGS.SHOW_LOCAL_TIME.DIFFERS_LABEL` (string) — Label for "Display if different from convention timezone".
-- `SETTINGS.SHOW_LOCAL_TIME.ALWAYS_LABEL` (string) — Label for the "Always display" option.
-- `SETTINGS.SHOW_TIMEZONE` (object)
-- `SETTINGS.SHOW_TIMEZONE.LABEL` (string) — Label for the "Show timezone after times" option group.
-- `SETTINGS.SHOW_TIMEZONE.NEVER_LABEL` (string) — Label for the "Never show" option.
-- `SETTINGS.SHOW_TIMEZONE.IF_LOCAL_LABEL` (string) — Label for "Show timezone if local time shown".
-- `SETTINGS.SHOW_TIMEZONE.ALWAYS_LABEL` (string) — Label for the "Always show" option.
-- `SETTINGS.SELECT_TIMEZONE` (object)
-- `SETTINGS.SELECT_TIMEZONE.LABEL` (string) — Label for the select-timezone group.
-- `SETTINGS.SELECT_TIMEZONE.BROWSER_DEFAULT_LABEL` (string) — Label to use the browser default timezone (will have the timezone name appended).
-- `SETTINGS.SELECT_TIMEZONE.SELECT_LABEL` (string) — Label to select an explicit timezone.
-- `SETTINGS.DARK_MODE` (object)
-- `SETTINGS.DARK_MODE.LABEL` (string) — Label for the dark mode settings group.
-- `SETTINGS.DARK_MODE.BROWSER_DEFAULT_LABEL` (string) — Label for the default browser dark-mode preference option.
-- `SETTINGS.DARK_MODE.BROWSER_LIGHT_LABEL` (string) — Label indicating the browser is currently in light mode.
-- `SETTINGS.DARK_MODE.BROWSER_DARK_LABEL` (string) — Label indicating the browser is currently in dark mode.
-- `SETTINGS.DARK_MODE.LIGHT_MODE_LABEL` (string) — Label for forcing light mode.
-- `SETTINGS.DARK_MODE.DARK_MODE_LABEL` (string) — Label for forcing dark mode.
+- `SETTINGS.TITLE` (object, required)
+- `SETTINGS.TITLE.LABEL` (string, required) — Label for the settings page.
+- `SETTINGS.TIME_FORMAT` (object, required)
+- `SETTINGS.TIME_FORMAT.LABEL` (string, required) — Label for the time format option group.
+- `SETTINGS.TIME_FORMAT.T12_HOUR_LABEL` (string, required) — Label for the 12 hour option.
+- `SETTINGS.TIME_FORMAT.T24_HOUR_LABEL` (string, required) — Label for the 24 hour option.
+- `SETTINGS.SHOW_LOCAL_TIME` (object, required)
+- `SETTINGS.SHOW_LOCAL_TIME.LABEL` (string, required) — Label for the Show Local Time option group.
+- `SETTINGS.SHOW_LOCAL_TIME.NEVER_LABEL` (string, required) — Label for the "Never show" option.
+- `SETTINGS.SHOW_LOCAL_TIME.DIFFERS_LABEL` (string, required) — Label for "Display if different from convention timezone".
+- `SETTINGS.SHOW_LOCAL_TIME.ALWAYS_LABEL` (string, required) — Label for the "Always display" option.
+- `SETTINGS.SHOW_TIMEZONE` (object, required)
+- `SETTINGS.SHOW_TIMEZONE.LABEL` (string, required) — Label for the "Show timezone after times" option group.
+- `SETTINGS.SHOW_TIMEZONE.NEVER_LABEL` (string, required) — Label for the "Never show" option.
+- `SETTINGS.SHOW_TIMEZONE.IF_LOCAL_LABEL` (string, required) — Label for "Show timezone if local time shown".
+- `SETTINGS.SHOW_TIMEZONE.ALWAYS_LABEL` (string, required) — Label for the "Always show" option.
+- `SETTINGS.SELECT_TIMEZONE` (object, required)
+- `SETTINGS.SELECT_TIMEZONE.LABEL` (string, required) — Label for the select-timezone group.
+- `SETTINGS.SELECT_TIMEZONE.BROWSER_DEFAULT_LABEL` (string, required) — Label to use the browser default timezone (will have the timezone name appended).
+- `SETTINGS.SELECT_TIMEZONE.SELECT_LABEL` (string, required) — Label to select an explicit timezone.
+- `SETTINGS.DARK_MODE` (object, required)
+- `SETTINGS.DARK_MODE.LABEL` (string, required) — Label for the dark mode settings group.
+- `SETTINGS.DARK_MODE.BROWSER_DEFAULT_LABEL` (string, required) — Label for the default browser dark-mode preference option.
+- `SETTINGS.DARK_MODE.BROWSER_LIGHT_LABEL` (string, required) — Label indicating the browser is currently in light mode.
+- `SETTINGS.DARK_MODE.BROWSER_DARK_LABEL` (string, required) — Label indicating the browser is currently in dark mode.
+- `SETTINGS.DARK_MODE.LIGHT_MODE_LABEL` (string, required) — Label for forcing light mode.
+- `SETTINGS.DARK_MODE.DARK_MODE_LABEL` (string, required) — Label for forcing dark mode.
 - `FOOTER` (object, required)
 - `FOOTER.SITE_NOTE_MARKDOWN` (string) — General note displayed in the footer of the page. May use Markdown for links, emphasis, etc.
 - `FOOTER.COPYRIGHT_MARKDOWN` (string) — Copyright notice, if required. May include Markdown.
 - `FOOTER.CONCLAR_NOTE_MARKDOWN` (string) — Note crediting ConClár. Free to remove or modify, but retaining it is politely requested to help promote this free tool.
 - `TIMER` (object, required)
-- `TIMER.FETCH_INTERVAL_MINS` (number) — Number of minutes between refreshes of program data.
-- `TIMER.TIMER_TICK_SECS` (number) — Number of seconds between checks of the timer.
+- `TIMER.FETCH_INTERVAL_MINS` (number, required) — Number of minutes between refreshes of program data.
+- `TIMER.TIMER_TICK_SECS` (number, required) — Number of seconds between checks of the timer.
 - `DEBUG_MODE` (object, required)
 - `DEBUG_MODE.ENABLE` (boolean) — If true, display a banner showing online status, and allowing manual data fetch.
 - `DEBUG_MODE.ONLINE_LABEL` (string) — Label to display in debug mode when online.
@@ -235,9 +235,9 @@ Copy `src/config_example.json` to `src/config.json` and customise. See the [Gett
 - `SYNC.LOGOUT_LABEL` (string) — Label for the logout link. @display_name is replaced with the user's display name.
 - `SYNC.ERROR_LABEL` (string) — Label for the error message when unable to connect to the sync server.
 - `SYNC.WARNING` (object) — The popup shown the first time an unauthenticated user adds or removes a selection, prompting them to log in.
-- `SYNC.WARNING.HEADING` (string) — Heading of the sync warning popup.
-- `SYNC.WARNING.TITLE` (string) — Main message body of the sync warning popup.
-- `SYNC.WARNING.DETAILS` (string) — Expandable detail text shown when the user clicks "More information" in the sync warning popup.
-- `SYNC.WARNING.DETAILS_LABEL` (string) — Label for the button that expands the detail text in the sync warning popup.
-- `SYNC.WARNING.LOGIN_LABEL` (string) — Label for the primary login button in the sync warning popup.
-- `SYNC.WARNING.DISMISS_LABEL` (string) — Label for the dismiss link in the sync warning popup.
+- `SYNC.WARNING.HEADING` (string, required) — Heading of the sync warning popup.
+- `SYNC.WARNING.TITLE` (string, required) — Main message body of the sync warning popup.
+- `SYNC.WARNING.DETAILS` (string, required) — Expandable detail text shown when the user clicks "More information" in the sync warning popup.
+- `SYNC.WARNING.DETAILS_LABEL` (string, required) — Label for the button that expands the detail text in the sync warning popup.
+- `SYNC.WARNING.LOGIN_LABEL` (string, required) — Label for the primary login button in the sync warning popup.
+- `SYNC.WARNING.DISMISS_LABEL` (string, required) — Label for the dismiss link in the sync warning popup.

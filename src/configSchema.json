@@ -124,6 +124,7 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Each value in this section sets the label that will appear on main navigation of the site. Useful for switching between different international spellings of \"programme\".",
+      "required": ["PROGRAM", "PEOPLE", "MYSCHEDULE", "SETTINGS"],
       "properties": {
         "PROGRAM": { "type": "string", "description": "Label for program/programme menu." },
         "PEOPLE": { "type": "string", "description": "Label for people menu." },
@@ -218,10 +219,12 @@
       "type": "object",
       "additionalProperties": false,
       "description": "General application-wide settings.",
+      "required": ["LOADING"],
       "properties": {
         "LOADING": {
           "type": "object",
           "additionalProperties": false,
+          "required": ["MESSAGE"],
           "properties": {
             "MESSAGE": { "type": "string", "description": "Message to display while loading." }
           }
@@ -232,11 +235,13 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Settings for the main programme list, My Schedule, and shared-items pages.",
+      "required": ["LIMIT", "SEARCH", "MY_SCHEDULE", "SHARED"],
       "properties": {
         "LIMIT": {
           "type": "object",
           "additionalProperties": false,
           "description": "Controls the \"maximum items displayed\" drop-down on the programme page.",
+          "required": ["DEFAULT", "SHOW_MORE"],
           "properties": {
             "SHOW": { "type": "boolean", "description": "If true, \"limit number of items\" drop-down will be displayed." },
             "LABEL": { "type": "string", "description": "Label for limit drop-down." },
@@ -250,17 +255,27 @@
             "SHOW_MORE": {
               "type": "object",
               "additionalProperties": false,
+              "required": ["LABEL", "NO_MORE", "NUM_EXTRA"],
               "properties": {
                 "LABEL": { "type": "string", "description": "Label for the \"Show more\" button." },
                 "NO_MORE": { "type": "string", "description": "Message to display when no more items are available." },
                 "NUM_EXTRA": { "type": "integer", "description": "Number of items to add when \"Show more\" is pressed." }
               }
             }
+          },
+          "if": {
+            "required": ["SHOW"],
+            "properties": { "SHOW": { "const": true } }
+          },
+          "then": {
+            "required": ["OPTIONS", "ALL_LABEL", "LABEL"],
+            "properties": { "OPTIONS": true, "ALL_LABEL": true, "LABEL": true }
           }
         },
         "SEARCH": {
           "type": "object",
           "additionalProperties": false,
+          "required": ["SEARCH_LABEL"],
           "properties": {
             "SEARCH_LABEL": { "type": "string", "description": "Placeholder for the programme search box." }
           }
@@ -269,11 +284,13 @@
           "type": "object",
           "additionalProperties": false,
           "description": "Settings for the My Schedule page.",
+          "required": ["TITLE", "EMPTY", "INTRO", "SHARE"],
           "properties": {
             "TITLE": { "type": "string", "description": "Title of My Schedule page." },
             "EMPTY": {
               "type": "object",
               "additionalProperties": false,
+              "required": ["TEXT"],
               "properties": {
                 "TEXT": { "type": "string", "description": "Text to display on My Schedule when no programme items are selected." }
               }
@@ -283,6 +300,7 @@
               "type": "object",
               "additionalProperties": false,
               "description": "Settings for the QR code / link sharing section of My Schedule.",
+              "required": ["LABEL", "DESCRIPTION", "LINK_LABEL", "MAX_LENGTH", "MULTIPLE_DESCRIPTION", "MULTIPLE_LINK_LABEL"],
               "properties": {
                 "LABEL": { "type": "string", "description": "Heading for the shared link section on My Schedule." },
                 "DESCRIPTION": { "type": "string", "description": "Descriptive message for the link sharing section." },
@@ -298,6 +316,7 @@
           "type": "object",
           "additionalProperties": false,
           "description": "Settings for the page showing programme items shared via a link.",
+          "required": ["TITLE", "DESCRIPTION", "BUTTON_LABEL"],
           "properties": {
             "TITLE": { "type": "string", "description": "Title of the Shared Programme Items page." },
             "DESCRIPTION": { "type": "string", "description": "Descriptive text for the page showing shared items." },
@@ -346,6 +365,14 @@
             "PLACEHOLDER": { "type": "string", "description": "The placeholder for the \"day\" tags drop-down." },
             "SEARCHABLE": { "type": "boolean", "description": "Whether the day tag list can be searched by typing." },
             "HIDE": { "type": "boolean", "description": "If true, hide the day tags drop-down. Day tags are still shown on items if GENERATE is true." }
+          },
+          "if": {
+            "required": ["GENERATE"],
+            "properties": { "GENERATE": { "const": true } }
+          },
+          "then": {
+            "required": ["DAYS"],
+            "properties": { "DAYS": true }
           }
         },
         "DONTLIST": {
@@ -489,6 +516,14 @@
       "properties": {
         "SHOW_DURATION": { "type": "boolean", "description": "If true, minutes from program data will be displayed." },
         "DURATION_LABEL": { "type": "string", "description": "Format for duration. @mins is replaced by the number of minutes. Do not translate @mins." }
+      },
+      "if": {
+        "required": ["SHOW_DURATION"],
+        "properties": { "SHOW_DURATION": { "const": true } }
+      },
+      "then": {
+        "required": ["DURATION_LABEL"],
+        "properties": { "DURATION_LABEL": true }
       }
     },
     "START_TIME": {
@@ -598,6 +633,7 @@
     "INFORMATION": {
       "type": "object",
       "additionalProperties": false,
+      "required": ["MARKDOWN_URL"],
       "properties": {
         "MARKDOWN_URL": { "type": "string", "description": "The address of the Markdown file containing additional information about the convention. May be a relative path to a file in the public directory." },
         "LOADING_MESSAGE": { "type": "string", "description": "Text to show while the Markdown file is loading (usually never seen)." }
@@ -607,10 +643,12 @@
       "type": "object",
       "additionalProperties": false,
       "description": "Labels for the Settings page.",
+      "required": ["TITLE", "TIME_FORMAT", "SHOW_LOCAL_TIME", "SHOW_TIMEZONE", "SELECT_TIMEZONE", "DARK_MODE"],
       "properties": {
         "TITLE": {
           "type": "object",
           "additionalProperties": false,
+          "required": ["LABEL"],
           "properties": {
             "LABEL": { "type": "string", "description": "Label for the settings page." }
           }
@@ -618,6 +656,7 @@
         "TIME_FORMAT": {
           "type": "object",
           "additionalProperties": false,
+          "required": ["LABEL", "T12_HOUR_LABEL", "T24_HOUR_LABEL"],
           "properties": {
             "LABEL": { "type": "string", "description": "Label for the time format option group." },
             "T12_HOUR_LABEL": { "type": "string", "description": "Label for the 12 hour option." },
@@ -627,6 +666,7 @@
         "SHOW_LOCAL_TIME": {
           "type": "object",
           "additionalProperties": false,
+          "required": ["LABEL", "NEVER_LABEL", "DIFFERS_LABEL", "ALWAYS_LABEL"],
           "properties": {
             "LABEL": { "type": "string", "description": "Label for the Show Local Time option group." },
             "NEVER_LABEL": { "type": "string", "description": "Label for the \"Never show\" option." },
@@ -637,6 +677,7 @@
         "SHOW_TIMEZONE": {
           "type": "object",
           "additionalProperties": false,
+          "required": ["LABEL", "NEVER_LABEL", "IF_LOCAL_LABEL", "ALWAYS_LABEL"],
           "properties": {
             "LABEL": { "type": "string", "description": "Label for the \"Show timezone after times\" option group." },
             "NEVER_LABEL": { "type": "string", "description": "Label for the \"Never show\" option." },
@@ -647,6 +688,7 @@
         "SELECT_TIMEZONE": {
           "type": "object",
           "additionalProperties": false,
+          "required": ["LABEL", "BROWSER_DEFAULT_LABEL", "SELECT_LABEL"],
           "properties": {
             "LABEL": { "type": "string", "description": "Label for the select-timezone group." },
             "BROWSER_DEFAULT_LABEL": { "type": "string", "description": "Label to use the browser default timezone (will have the timezone name appended)." },
@@ -656,6 +698,7 @@
         "DARK_MODE": {
           "type": "object",
           "additionalProperties": false,
+          "required": ["LABEL", "BROWSER_DEFAULT_LABEL", "BROWSER_LIGHT_LABEL", "BROWSER_DARK_LABEL", "LIGHT_MODE_LABEL", "DARK_MODE_LABEL"],
           "properties": {
             "LABEL": { "type": "string", "description": "Label for the dark mode settings group." },
             "BROWSER_DEFAULT_LABEL": { "type": "string", "description": "Label for the default browser dark-mode preference option." },
@@ -679,6 +722,7 @@
     "TIMER": {
       "type": "object",
       "additionalProperties": false,
+      "required": ["FETCH_INTERVAL_MINS", "TIMER_TICK_SECS"],
       "properties": {
         "FETCH_INTERVAL_MINS": { "type": "number", "description": "Number of minutes between refreshes of program data." },
         "TIMER_TICK_SECS": { "type": "number", "description": "Number of seconds between checks of the timer." }
@@ -692,6 +736,14 @@
         "ONLINE_LABEL": { "type": "string", "description": "Label to display in debug mode when online." },
         "OFFLINE_LABEL": { "type": "string", "description": "Label to display in debug mode when offline." },
         "FETCH_BUTTON_LABEL": { "type": "string", "description": "Label to display in debug mode on the Fetch button." }
+      },
+      "if": {
+        "required": ["ENABLE"],
+        "properties": { "ENABLE": { "const": true } }
+      },
+      "then": {
+        "required": ["ONLINE_LABEL", "OFFLINE_LABEL", "FETCH_BUTTON_LABEL"],
+        "properties": { "ONLINE_LABEL": true, "OFFLINE_LABEL": true, "FETCH_BUTTON_LABEL": true }
       }
     },
     "SYNC": {
@@ -708,6 +760,7 @@
           "type": "object",
           "additionalProperties": false,
           "description": "The popup shown the first time an unauthenticated user adds or removes a selection, prompting them to log in.",
+          "required": ["HEADING", "TITLE", "DETAILS", "DETAILS_LABEL", "LOGIN_LABEL", "DISMISS_LABEL"],
           "properties": {
             "HEADING": { "type": "string", "description": "Heading of the sync warning popup." },
             "TITLE": { "type": "string", "description": "Main message body of the sync warning popup." },
@@ -717,6 +770,14 @@
             "DISMISS_LABEL": { "type": "string", "description": "Label for the dismiss link in the sync warning popup." }
           }
         }
+      },
+      "if": {
+        "required": ["API_URL"],
+        "properties": { "API_URL": { "type": "string", "minLength": 1 } }
+      },
+      "then": {
+        "required": ["WARNING"],
+        "properties": { "WARNING": true }
       }
     }
   }
