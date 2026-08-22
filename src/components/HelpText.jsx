@@ -15,6 +15,9 @@ const HelpText = () => {
   if (selector in helpTextDismissed && helpTextDismissed[selector]) {
     return <></>;
   }
+  if (!configData.HELP_TEXT) {
+    return <></>;
+  }
   const text = configData.HELP_TEXT[selector];
   return (
     <div className="help-text">

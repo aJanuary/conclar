@@ -64,17 +64,20 @@ const ProgramList = ({ program, forceExpanded = false }) => {
       now={now}
     />
   );
-  const conventionTime = (
+  const conventionTime = configData.CONVENTION_TIME?.NOTICE ? (
     <div className="time-convention-message" aria-hidden="true">
       {configData.CONVENTION_TIME.NOTICE.replace(
         "@timezone",
         configData.TIMEZONE
       )}
     </div>
+  ) : (
+    ""
   );
   const localTime =
-    showLocalTime === "always" ||
-    (showLocalTime === "differs" && LocalTime.timezonesDiffer) ? (
+    (showLocalTime === "always" ||
+      (showLocalTime === "differs" && LocalTime.timezonesDiffer)) &&
+    configData.LOCAL_TIME?.NOTICE ? (
       <div className="time-local-message">
         {configData.LOCAL_TIME.NOTICE.replace(
           "@timezone",

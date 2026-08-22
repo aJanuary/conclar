@@ -8,9 +8,9 @@ const TagSelectors = ({ tags, selTags, setSelTags, tagConfig, resetLimit }) => {
    */
   function findTagData(tag) {
     // Check for day tag.
-    if (tag === "days" && tagConfig.DAY_TAG.GENERATE)
+    if (tag === "days" && tagConfig.DAY_TAG?.GENERATE)
       return tagConfig.DAY_TAG;
-    const tagData = tagConfig.SEPARATE.find(
+    const tagData = tagConfig.SEPARATE?.find(
       (item) => item.PREFIX === tag
     );
     if (tagData !== undefined) return tagData;

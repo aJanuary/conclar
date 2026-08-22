@@ -48,10 +48,10 @@ const MySchedule = () => {
         <div className="stack">
           <div className="filter-expand">
             <button disabled={allSelectedExpanded} onClick={expandSelected}>
-              {configData.EXPAND.EXPAND_ALL_LABEL}
+              {configData.EXPAND?.EXPAND_ALL_LABEL ?? "Expand All"}
             </button>
             <button disabled={noneExpanded} onClick={collapseSelected}>
-              {configData.EXPAND.COLLAPSE_ALL_LABEL}
+              {configData.EXPAND?.COLLAPSE_ALL_LABEL ?? "Collapse All"}
             </button>
           </div>
         </div>

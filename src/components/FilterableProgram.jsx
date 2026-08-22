@@ -168,7 +168,7 @@ const FilterableProgram = () => {
     if (LocalTime.isDuringCon(program) && !showPastItems) {
       filtered = LocalTime.filterPastItems(filtered);
     }
-    if (!configData.HIDE_BEFORE.HIDE && hideBefore) {
+    if (!configData.HIDE_BEFORE?.HIDE && hideBefore) {
       if (
         "days" in selTags &&
         Array.isArray(selTags.days) &&
@@ -258,19 +258,7 @@ const FilterableProgram = () => {
     );
 
   // create list of options for hide before time drop-down.
-  const hideBeforeOptions = [
-    <option value="" key="0">
-      {configData.HIDE_BEFORE.PLACEHOLDER}
-    </option>,
-  ];
-  for (const time of configData.HIDE_BEFORE.TIMES) {
-    hideBeforeOptions.push(
-      <option value={time.TIME} key={time.TIME}>
-        {show12HourTime ? time.LABEL_12H : time.LABEL_24H}
-      </option>
-    );
-  }
-  const hideBeforeSelect = configData.HIDE_BEFORE.HIDE ? (
+  const hideBeforeSelect = !configData.HIDE_BEFORE || configData.HIDE_BEFORE.HIDE ? (
     <></>
   ) : (
     <div className="filter-hide-before">
@@ -284,7 +272,14 @@ const FilterableProgram = () => {
           setHideBefore(e.target.value);
         }}
       >
-        {hideBeforeOptions}
+        <option value="" key="0">
+          {configData.HIDE_BEFORE.PLACEHOLDER}
+        </option>
+        {(configData.HIDE_BEFORE.TIMES ?? []).map((time) => (
+          <option value={time.TIME} key={time.TIME}>
+            {show12HourTime ? time.LABEL_12H : time.LABEL_24H}
+          </option>
+        ))}
       </select>
     </div>
   );
@@ -298,7 +293,7 @@ const FilterableProgram = () => {
               placeholder="Select locations"
               options={buildLocationOptions(locations, configData)}
               isMulti
-              isSearchable={configData.LOCATIONS.SEARCHABLE}
+              isSearchable={configData.LOCATIONS?.SEARCHABLE}
               value={selLoc}
               onChange={(value) => {
                 resetDisplayLimit();
@@ -319,7 +314,7 @@ const FilterableProgram = () => {
             tags={tags}
             selTags={selTags}
             setSelTags={setSelTags}
-            tagConfig={configData.TAGS}
+            tagConfig={configData.TAGS ?? {}}
             resetLimit={resetDisplayLimit}
           />
           {hideBeforeSelect}
@@ -349,10 +344,10 @@ const FilterableProgram = () => {
             <div className="filter-total">{totalMessage}</div>
             <div className="filter-expand">
               <button disabled={allExpanded} onClick={expandAll}>
-                {configData.EXPAND.EXPAND_ALL_LABEL}
+                {configData.EXPAND?.EXPAND_ALL_LABEL ?? "Expand All"}
               </button>
               <button disabled={noneExpanded} onClick={collapseAll}>
-                {configData.EXPAND.COLLAPSE_ALL_LABEL}
+                {configData.EXPAND?.COLLAPSE_ALL_LABEL ?? "Collapse All"}
               </button>
             </div>
           </div>

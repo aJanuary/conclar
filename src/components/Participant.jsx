@@ -21,7 +21,7 @@ const Participant = ({ person, thumbnails = true, moderator }) => {
         );
       }
       if (
-        configData.PEOPLE.THUMBNAILS &&
+        configData.PEOPLE?.THUMBNAILS &&
         configData.PEOPLE.THUMBNAILS.SHOW_THUMBNAILS &&
         configData.PEOPLE.THUMBNAILS.DEFAULT_IMAGE
       ) {
@@ -47,7 +47,7 @@ const Participant = ({ person, thumbnails = true, moderator }) => {
         <span>
           {person.name}{" "}
           <span className="moderator">
-            {configData.PEOPLE.MODERATORS.MODERATOR_LABEL}
+            {configData.PEOPLE?.MODERATORS?.MODERATOR_LABEL}
           </span>
         </span>
       );

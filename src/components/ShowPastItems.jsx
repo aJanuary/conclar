@@ -10,10 +10,10 @@ const ShowPastItems = () => {
     (actions) => actions.setShowPastItems
   );
   return LocalTime.isDuringCon(program) &&
-    configData.SHOW_PAST_ITEMS.SHOW_CHECKBOX ? (
+    configData.SHOW_PAST_ITEMS?.SHOW_CHECKBOX ? (
     <Switch
       id={LocalTime.pastItemsClass}
-      label={configData.SHOW_PAST_ITEMS.CHECKBOX_LABEL}
+      label={configData.SHOW_PAST_ITEMS?.CHECKBOX_LABEL}
       checked={showPastItems}
       onChange={setShowPastItems} />
   ) : (

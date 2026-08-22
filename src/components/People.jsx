@@ -58,17 +58,17 @@ const People = () => {
       key={person.id}
       person={person}
       thumbnails={
-        configData.PEOPLE.THUMBNAILS.SHOW_THUMBNAILS && showThumbnails
+        configData.PEOPLE?.THUMBNAILS?.SHOW_THUMBNAILS && showThumbnails
       }
     />
   ));
 
   const thumbnailCheckboxLabel =
-    configData.PEOPLE.THUMBNAILS.SHOW_THUMBNAILS ===
-    configData.PEOPLE.THUMBNAILS.SHOW_CHECKBOX
-      ? configData.PEOPLE.THUMBNAILS.CHECKBOX_LABEL
-      : configData.USELESS_CHECKBOX.CHECKBOX_LABEL;
-  const thumbnailsCheckbox = configData.PEOPLE.THUMBNAILS.SHOW_CHECKBOX ? (
+    configData.PEOPLE?.THUMBNAILS?.SHOW_THUMBNAILS ===
+    configData.PEOPLE?.THUMBNAILS?.SHOW_CHECKBOX
+      ? configData.PEOPLE?.THUMBNAILS?.CHECKBOX_LABEL
+      : configData.USELESS_CHECKBOX?.CHECKBOX_LABEL;
+  const thumbnailsCheckbox = configData.PEOPLE?.THUMBNAILS?.SHOW_CHECKBOX ? (
     <Switch
       id="thumbnails"
       label={thumbnailCheckboxLabel}
@@ -78,17 +78,17 @@ const People = () => {
     ""
   );
 
-  const sortCheckbox = configData.PEOPLE.SORT.SHOW_CHECKBOX ? (
+  const sortCheckbox = configData.PEOPLE?.SORT?.SHOW_CHECKBOX ? (
     <Switch
       id="sort_people"
-      label={configData.PEOPLE.SORT.CHECKBOX_LABEL}
+      label={configData.PEOPLE?.SORT?.CHECKBOX_LABEL}
       checked={sortByFullName}
       onChange={setSortByFullName} />
   ) : (
     ""
   );
 
-  const searchInput = configData.PEOPLE.SEARCH.SHOW_SEARCH ? (
+  const searchInput = configData.PEOPLE?.SEARCH?.SHOW_SEARCH ? (
     <div className="people-search">
       <label htmlFor="people-search">Search people</label>
       <input
@@ -96,7 +96,7 @@ const People = () => {
         type="search"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        placeholder={configData.PEOPLE.SEARCH.SEARCH_LABEL}
+        placeholder={configData.PEOPLE?.SEARCH?.SEARCH_LABEL}
       />
     </div>
   ) : (
@@ -113,7 +113,7 @@ const People = () => {
             tags={personTags}
             selTags={selTags}
             setSelTags={setSelTags}
-            tagConfig={configData.PEOPLE.TAGS}
+            tagConfig={configData.PEOPLE?.TAGS ?? {}}
           />
           {searchInput}
         </div>

@@ -122,7 +122,7 @@ export class LocalTime {
 
   static getStoredTwelveHourTime() {
     const stored12HourTime = localStorage.getItem(this.twelveHourTimeClass);
-    if (configData.TIME_FORMAT.DEFAULT_12HR)
+    if (configData.TIME_FORMAT?.DEFAULT_12HR)
       // If defaulting to 12 hour, assume true unless "false" saved.
       return stored12HourTime === "false" ? false : true;
     // If defaulting to 24 hour, assume false unless "true" saved.
@@ -248,18 +248,18 @@ export class LocalTime {
     function format12HourTime(dateAndTime) {
       if (dateAndTime.hour === 0)
         return `12:${formatTwoDigits(dateAndTime.minute)} ${
-          configData.TIME_FORMAT.AM
+          configData.TIME_FORMAT?.AM ?? "AM"
         }`;
       if (dateAndTime.hour < 12)
         return `${dateAndTime.hour}:${formatTwoDigits(dateAndTime.minute)} ${
-          configData.TIME_FORMAT.AM
+          configData.TIME_FORMAT?.AM ?? "AM"
         }`;
       if (dateAndTime.hour === 12)
         return `12:${formatTwoDigits(dateAndTime.minute)} ${
-          configData.TIME_FORMAT.PM
+          configData.TIME_FORMAT?.PM ?? "PM"
         }`;
       return `${dateAndTime.hour - 12}:${formatTwoDigits(dateAndTime.minute)} ${
-        configData.TIME_FORMAT.PM
+        configData.TIME_FORMAT?.PM ?? "PM"
       }`;
     }
     //let language = window.navigator.userLanguage || window.navigator.language;
@@ -351,10 +351,12 @@ export class LocalTime {
     // Compare the dates without time to see if we're showing time on next or previous day, and if so attach label.
     switch (Temporal.PlainDate.compare(localDate, conDate)) {
       case -1:
-        cacheValue[cacheKey] = formattedTime + configData.LOCAL_TIME.PREV_DAY;
+        cacheValue[cacheKey] =
+          formattedTime + (configData.LOCAL_TIME?.PREV_DAY ?? "");
         break;
       case 1:
-        cacheValue[cacheKey] = formattedTime + configData.LOCAL_TIME.NEXT_DAY;
+        cacheValue[cacheKey] =
+          formattedTime + (configData.LOCAL_TIME?.NEXT_DAY ?? "");
         break;
       default:
         cacheValue[cacheKey] = formattedTime;
@@ -403,23 +405,22 @@ export class LocalTime {
    * @returns {Array}
    */
   static filterPastItems(program) {
-    if (configData.SHOW_PAST_ITEMS.FROM_START) {
+    const adjustMinutes = configData.SHOW_PAST_ITEMS?.ADJUST_MINUTES ?? 0;
+    if (configData.SHOW_PAST_ITEMS?.FROM_START) {
       // Filter by past item state.  Quick hack to treat this as a filter.
       const cutOff = Temporal.Now.zonedDateTimeISO("UTC").add({
-        minutes: configData.SHOW_PAST_ITEMS.ADJUST_MINUTES,
+        minutes: adjustMinutes,
       });
       return program.filter((item) => {
         return Temporal.ZonedDateTime.compare(cutOff, item.startDateAndTime) <= 0;
       });
     } else {
       const cutOff = Temporal.Now.zonedDateTimeISO("UTC").subtract({
-        minutes: configData.SHOW_PAST_ITEMS.ADJUST_MINUTES,
+        minutes: adjustMinutes,
       });
       return program.filter((item) => {
         const itemNearEndTime = item.startDateAndTime.add({
-          minutes: item.hasOwnProperty("mins")
-            ? item.mins
-            : configData.SHOW_PAST_ITEMS.ADJUST_MINUTES,
+          minutes: item.hasOwnProperty("mins") ? item.mins : adjustMinutes,
         });
         return Temporal.ZonedDateTime.compare(cutOff, itemNearEndTime) <= 0;
       });

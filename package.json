@@ -24,7 +24,10 @@
   "scripts": {
     "start": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "validate:config-example": "node scripts/validateConfigExample.mjs",
+    "docs:generate": "node scripts/generateConfigDocs.mjs",
+    "docs:check": "node scripts/generateConfigDocs.mjs --check"
   },
   "browserslist": {
     "production": [
@@ -40,6 +43,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^6.0.3",
+    "ajv": "^8.20.0",
     "terser": "^5.48.0",
     "vite": "^8.1.3"
   },

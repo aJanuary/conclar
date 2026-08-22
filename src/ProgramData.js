@@ -353,7 +353,7 @@ export class ProgramData {
    */
   static processData(progData, pplData) {
     let program = this.processProgramData(progData);
-    if (configData.TAGS.FORMAT_AS_TAG) program = this.reformatAsTag(program);
+    if (configData.TAGS?.FORMAT_AS_TAG) program = this.reformatAsTag(program);
     if (
       configData.LINKS &&
       configData.LINKS.filter((link) => link.TAG.length > 0).length > 0
@@ -362,8 +362,8 @@ export class ProgramData {
     const people = this.processPeopleData(pplData);
     this.addProgramParticipantDetails(program, people);
     const locations = this.processLocations(program);
-    const tags = this.processTags(program, configData.TAGS);
-    const personTags = this.processTags(people, configData.PEOPLE.TAGS);
+    const tags = this.processTags(program, configData.TAGS ?? {});
+    const personTags = this.processTags(people, configData.PEOPLE?.TAGS ?? {});
     LocalTime.checkTimeZonesDiffer(program);
 
     //setLoadingMessage("Processing Complete... Rendering...")
