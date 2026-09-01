@@ -166,7 +166,7 @@
     },
     {"NAME": "meeting",
      "TEXT": "Click to view stream",
-     "TAG": "type:Streaming",
+     "TAG": "Type:Streaming",
      "WHEN": ["during"]
     },
     {"NAME": "recording",
